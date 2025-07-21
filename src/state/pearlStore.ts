@@ -302,15 +302,15 @@ export const usePearl = create<PearlStore>((set, get) => ({
     if (elapsedMinutes < 1) return; // Wait 1 minute minimum
     
     // Apply decay - faster decay for more responsive gameplay
-    const decayRate = elapsedMinutes / 60; // Convert to hourly rate
-    let newHunger = clamp(state.hunger - (3 * decayRate)); // 3 points per hour
-    let newEnergy = clamp(state.energy - (2 * decayRate)); // 2 points per hour
-    let newHygiene = clamp(state.hygiene - (1.5 * decayRate)); // 1.5 points per hour
+    const decayRate = elapsedMinutes; // Direct minute rate
+    let newHunger = clamp(state.hunger - (3 * decayRate)); // 3 points per minute
+    let newEnergy = clamp(state.energy - (2 * decayRate)); // 2 points per minute
+    let newHygiene = clamp(state.hygiene - (2 * decayRate)); // 2 points per minute
     
     // Extra decay if sick
     if (state.statusFlags.includes('sick')) {
-      newHunger = clamp(newHunger - (1.5 * decayRate)); // +50% decay
-      newEnergy = clamp(newEnergy - (1 * decayRate)); // +50% decay
+      newHunger = clamp(newHunger - (1.5 * decayRate)); // +1.5 points per minute when sick
+      newEnergy = clamp(newEnergy - (1 * decayRate)); // +1 point per minute when sick
     }
     
     // Reset daily tracking if new day
