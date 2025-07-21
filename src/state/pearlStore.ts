@@ -457,12 +457,6 @@ export const usePearl = create<PearlStore>((set, get) => ({
       
       set(newStats);
       
-      // Update derived stats and bond progress
-      const happiness = get().computeHappiness();
-      const mood = get().computeMood();
-      set({ happiness, mood });
-      get().updateBondProgress();
-      
       // Dispatch notification event
       window.dispatchEvent(new CustomEvent('activityResult', {
         detail: { statChanges: { affection: 10, energy: -8 }, message: messages[playType].success }
@@ -480,12 +474,6 @@ export const usePearl = create<PearlStore>((set, get) => ({
         energy: clamp(state.energy - 5),
         lastInteraction: now
       });
-      
-      // Update derived stats and bond progress
-      const happiness = get().computeHappiness();
-      const mood = get().computeMood();
-      set({ happiness, mood });
-      get().updateBondProgress();
       
       // Dispatch notification event
       window.dispatchEvent(new CustomEvent('activityResult', {
