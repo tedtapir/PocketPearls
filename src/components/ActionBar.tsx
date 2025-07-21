@@ -66,7 +66,7 @@ export const ActionBar: React.FC = () => {
       
       {/* Bottom Action Bar */}
       <div className="bg-black/80 backdrop-blur-md border-t border-white/20 p-3 sm:p-4 safe-area-inset-bottom">
-        <div className="flex justify-around items-center max-w-lg mx-auto px-2">
+        <div className="flex justify-around items-center max-w-2xl mx-auto px-2">
           {/* Feed Button */}
           <button
             onClick={() => setActiveModal('feed')}
@@ -129,7 +129,7 @@ export const ActionBar: React.FC = () => {
               Wash
             </span>
           </button>
-        </div>
+
           {/* Tidy Button */}
           <button
             onClick={() => setActiveModal('tidy')}
@@ -142,6 +142,7 @@ export const ActionBar: React.FC = () => {
               Tidy
             </span>
           </button>
+        </div>
       </div>
 
       {/* Result Message */}
