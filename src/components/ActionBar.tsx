@@ -46,16 +46,13 @@ export const ActionBar: React.FC = () => {
     
     setLastResult(result);
     
-    // Show activity clip if available, then appreciation
-    if (result && result.success) {
-      setIsTransitioning(true);
-      if (result.clipPath && result.clipPath !== '') {
-        console.log('Setting activity clip to:', result.clipPath);
-        setActivityClip(result.clipPath);
-      } else {
-        // If no activity clip, go straight to appreciation
-        setTimeout(() => setShowAppreciation(true), 300);
-      }
+    // Show activity clip if available
+    if (result && result.success && result.clipPath && result.clipPath !== '') {
+      console.log('Setting activity clip to:', result.clipPath);
+      setActivityClip(result.clipPath);
+    } else if (result && result.success) {
+      // If no activity clip, go straight to appreciation
+      setShowAppreciation(true);
     }
     
     // Show result briefly
@@ -63,17 +60,12 @@ export const ActionBar: React.FC = () => {
   };
 
   const handleActivityClipEnd = () => {
-    setTimeout(() => {
-      setActivityClip(null);
-      setTimeout(() => setShowAppreciation(true), 200);
-    }, 100);
+    setActivityClip(null);
+    setShowAppreciation(true);
   };
 
   const handleAppreciationEnd = () => {
-    setTimeout(() => {
-      setShowAppreciation(false);
-      setTimeout(() => setIsTransitioning(false), 200);
-    }, 100);
+    setShowAppreciation(false);
   };
 
   return (
