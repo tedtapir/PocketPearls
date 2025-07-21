@@ -56,7 +56,7 @@ export const PearlAvatar: React.FC = () => {
   }, [mood, statusFlags, bondLevel]);
 
   return (
-    <div className="w-full h-full relative overflow-hidden">
+    <div className="w-full h-full relative overflow-hidden transition-opacity duration-300">
       <VideoPlayer
         src={clipPaths}
         className="w-full h-full object-cover object-center"

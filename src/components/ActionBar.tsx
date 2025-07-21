@@ -10,6 +10,7 @@ export const ActionBar: React.FC = () => {
   const [lastResult, setLastResult] = useState<any>(null);
   const [activityClip, setActivityClip] = useState<string | null>(null);
   const [showAppreciation, setShowAppreciation] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
 
   const handleActivity = (activity: string, options?: any) => {
@@ -47,12 +48,13 @@ export const ActionBar: React.FC = () => {
     
     // Show activity clip if available, then appreciation
     if (result && result.success) {
+      setIsTransitioning(true);
       if (result.clipPath && result.clipPath !== '') {
         console.log('Setting activity clip to:', result.clipPath);
         setActivityClip(result.clipPath);
       } else {
         // If no activity clip, go straight to appreciation
-        setShowAppreciation(true);
+        setTimeout(() => setShowAppreciation(true), 300);
       }
     }
     
@@ -61,20 +63,26 @@ export const ActionBar: React.FC = () => {
   };
 
   const handleActivityClipEnd = () => {
-    setActivityClip(null);
-    // Show appreciation after activity clip ends
-    setShowAppreciation(true);
+    setTimeout(() => {
+      setActivityClip(null);
+      setTimeout(() => setShowAppreciation(true), 200);
+    }, 100);
   };
 
   const handleAppreciationEnd = () => {
-    setShowAppreciation(false);
-    // Return to idle animation (handled by PearlAvatar)
+    setTimeout(() => {
+      setShowAppreciation(false);
+      setTimeout(() => setIsTransitioning(false), 200);
+    }, 100);
   };
+
   return (
     <>
       {/* Activity Clip Overlay */}
       {activityClip && (
-        <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div className={`fixed inset-0 bg-black flex items-center justify-center z-50 transition-opacity duration-300 ${
+          activityClip ? 'opacity-100' : 'opacity-0'
+        }`}>
           <div className="relative">
             <VideoPlayer
               src={activityClip}
@@ -89,7 +97,9 @@ export const ActionBar: React.FC = () => {
       
       {/* Appreciation Video Overlay */}
       {showAppreciation && (
-        <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div className={`fixed inset-0 bg-black flex items-center justify-center z-50 transition-opacity duration-300 ${
+          showAppreciation ? 'opacity-100' : 'opacity-0'
+        }`}>
           <div className="relative">
             <VideoPlayer
               src="/videos/pearl_appreciation_1.mp4"

@@ -151,7 +151,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         className="w-full h-full object-contain"
         style={{ 
           opacity: isLoading || isTransitioning ? 0 : 1,
-          transition: 'opacity 0.1s ease-in-out'
+          transition: 'opacity 0.3s ease-in-out'
         }}
       />
       
@@ -164,7 +164,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           className="w-full h-full object-contain absolute inset-0"
           style={{ 
             opacity: isTransitioning ? 1 : 0,
-            transition: 'opacity 0.1s ease-in-out',
+            transition: 'opacity 0.3s ease-in-out',
             zIndex: isTransitioning ? 10 : -1
           }}
         />
