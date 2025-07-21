@@ -125,7 +125,6 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
             <div className="bg-pp-surface p-6 rounded-lg border border-gray-600">
               <div className="text-center">
                 <div className="text-4xl mb-4">🚿</div>
-                <p className="text-sm text-gray-400">Wash sequence placeholder</p>
               </div>
             </div>
           </div>
