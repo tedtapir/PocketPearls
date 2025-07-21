@@ -147,7 +147,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-contain"
         />
       </div>
       
