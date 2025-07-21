@@ -207,10 +207,10 @@ export const usePearl = create<PearlStore>((set, get) => ({
         Math.random() < 0.15) { // 15% chance
       
       const rareClips = [
-        '/videos/alexa_neutral_1.mp4.mp4',
-        '/videos/alexa_neutral_2.mp4.mp4',
-        '/videos/alexa_neutral_3.mp4.mp4',
-        '/videos/alexa_neutral_4.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4',
+        '/videos/alexa_neutral_2.mp4',
+        '/videos/alexa_neutral_3.mp4',
+        '/videos/alexa_neutral_4.mp4'
       ];
       
       const availableClips = rareClips.filter(clip => !state.unlockedClips.includes(clip));
@@ -566,7 +566,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She's settling in for a good rest.",
-      clipPath: '/videos/sleep_settling_1.mp4',
+      clipPath: '/videos/sleep_settling_1.mp4.mp4',
       statChanges: { energy: 40, trust: 3, hunger: -10 }
     };
   },
