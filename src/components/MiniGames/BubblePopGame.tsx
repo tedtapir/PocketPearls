@@ -22,15 +22,38 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
   const [gameActive, setGameActive] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const gameAreaRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const spawnerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start game when opened
   useEffect(() => {
-    if (isOpen && !gameActive) {
+    if (isOpen && !gameActive && !gameOver) {
       startGame();
+    }
+    
+    // Cleanup on close
+    if (!isOpen) {
+      cleanup();
     }
   }, [isOpen]);
 
+  const cleanup = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (spawnerRef.current) {
+      clearInterval(spawnerRef.current);
+      spawnerRef.current = null;
+    }
+    setGameActive(false);
+    setBubbles([]);
+  };
+
   const startGame = () => {
+    console.log('Starting bubble pop game...');
+    cleanup(); // Clean up any existing timers
+    
     setTimeLeft(30);
     setScore(0);
     setBubbles([]);
@@ -38,10 +61,9 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
     setGameOver(false);
 
     // Start countdown
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          clearInterval(timer);
           endGame();
           return 0;
         }
@@ -50,33 +72,34 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
     }, 1000);
 
     // Spawn bubbles every 0.75 seconds
-    const spawner = setInterval(() => {
-      if (gameActive) {
-        spawnBubble();
-      }
+    spawnerRef.current = setInterval(() => {
+      spawnBubble();
     }, 750);
-
-    // Cleanup on game end
-    setTimeout(() => {
-      clearInterval(spawner);
-    }, 30000);
+    
+    // Spawn first bubble immediately
+    spawnBubble();
   };
 
   const spawnBubble = () => {
-    if (!gameAreaRef.current) return;
+    console.log('Spawning bubble...');
+    if (!gameAreaRef.current) {
+      console.log('No game area ref');
+      return;
+    }
 
     const gameArea = gameAreaRef.current.getBoundingClientRect();
     const size = 80 + Math.random() * 60; // 80-140px
     
     const newBubble: Bubble = {
       id: Date.now() + Math.random(),
-      x: Math.random() * (gameArea.width - size),
-      y: Math.random() * (gameArea.height - size),
+      x: Math.random() * (window.innerWidth - size),
+      y: Math.random() * (window.innerHeight - 200) + 100, // Avoid UI areas
       size,
       color: ['#33FFCA', '#FF66B3', '#FFCA3A', '#A855F7', '#10B981'][Math.floor(Math.random() * 5)],
       popped: false
     };
 
+    console.log('Created bubble:', newBubble);
     setBubbles(prev => [...prev, newBubble]);
 
     // Remove bubble after 4-7 seconds if not popped
@@ -86,6 +109,7 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
   };
 
   const popBubble = (bubbleId: number) => {
+    console.log('Popping bubble:', bubbleId);
     setBubbles(prev => prev.map(bubble => {
       if (bubble.id === bubbleId && !bubble.popped) {
         setScore(s => s + 1);
@@ -101,9 +125,10 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
   };
 
   const endGame = () => {
+    console.log('Ending game with score:', score);
+    cleanup();
     setGameActive(false);
     setGameOver(true);
-    setBubbles([]);
 
     // Award currency
     const state = usePearl.getState();
@@ -143,14 +168,15 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
       </div>
 
       {/* Game Area */}
-      <div ref={gameAreaRef} className="absolute inset-0 pt-24 pb-8">
+      <div ref={gameAreaRef} className="absolute inset-0 pt-24 pb-8 overflow-hidden">
         {/* Bubbles */}
+        {console.log('Rendering bubbles:', bubbles.length)}
         {bubbles.map(bubble => (
           <div
             key={bubble.id}
             className={`absolute cursor-pointer select-none transition-all duration-300 ${
               bubble.popped ? 'scale-150 opacity-0' : 'scale-100 opacity-100'
-            }`}
+            } z-10`}
             style={{
               left: `${bubble.x}px`,
               top: `${bubble.y}px`,
