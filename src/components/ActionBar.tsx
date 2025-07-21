@@ -34,8 +34,10 @@ export const ActionBar: React.FC = () => {
     // Show activity clip if available
     if (result.clipPath) {
       setActivityClip(result.clipPath);
-      // Auto-hide after 3 seconds
-      setTimeout(() => setActivityClip(null), 3000);
+      // Don't auto-hide for wash - let video play to completion
+      if (activity !== 'wash') {
+        setTimeout(() => setActivityClip(null), 3000);
+      }
     }
     
     // Show result briefly
@@ -46,20 +48,15 @@ export const ActionBar: React.FC = () => {
     <>
       {/* Activity Clip Overlay */}
       {activityClip && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
           <div className="relative">
             <VideoPlayer
               src={activityClip}
-              className="w-80 h-80 rounded-2xl"
+              className="w-screen h-screen"
               loop={false}
+              autoPlay={true}
               onEnded={() => setActivityClip(null)}
             />
-            <button
-              onClick={() => setActivityClip(null)}
-              className="absolute top-4 right-4 text-white bg-black/50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-black/70"
-            >
-              ✕
-            </button>
           </div>
         </div>
       )}
