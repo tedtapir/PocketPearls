@@ -5,33 +5,50 @@ import { ActionBar } from '../components/ActionBar';
 import { NotificationSystem } from '../components/NotificationSystem';
 import { AnalyticsDashboard } from '../components/AnalyticsDashboard';
 import { usePearlTicker } from '../hooks/usePearlTicker';
+import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 export const Home: React.FC = () => {
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  
   usePearlTicker();
+  
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+    <div className="h-screen w-full relative overflow-hidden bg-black">
       <NotificationSystem />
       
-      <header className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold gradient-text">PocketPearl</h1>
-        <div className="text-sm text-gray-400">Full Release</div>
-      </header>
+      {/* Full Screen Video Background */}
+      <div className="absolute inset-0">
+        <PearlAvatar />
+      </div>
       
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          <PearlAvatar />
-          <div className="mt-6">
-            <ActionBar />
-          </div>
+      {/* Top Right Stats Panel */}
+      <div className="absolute top-4 right-4 z-20">
+        <StatsPanel />
+      </div>
+      
+      {/* Top Left Analytics Dropdown */}
+      <div className="absolute top-4 left-4 z-20">
+        <div className="relative">
+          <button
+            onClick={() => setShowAnalytics(!showAnalytics)}
+            className="pp-btn flex items-center gap-2"
+          >
+            <span>Your Journey</span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${showAnalytics ? 'rotate-180' : ''}`} />
+          </button>
+          
+          {showAnalytics && (
+            <div className="absolute top-full left-0 mt-2 z-30">
+              <AnalyticsDashboard />
+            </div>
+          )}
         </div>
-        
-        <div className="space-y-6">
-          <StatsPanel />
-        </div>
-        
-        <div className="lg:block hidden">
-          <AnalyticsDashboard />
-        </div>
+      </div>
+      
+      {/* Bottom Action Bar */}
+      <div className="absolute bottom-0 left-0 right-0 z-20">
+        <ActionBar />
       </div>
     </div>
   );

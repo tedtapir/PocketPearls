@@ -14,12 +14,12 @@ const StatRow: React.FC<{ label: string; value: number; color?: string }> = ({
   };
 
   return (
-    <div className="mb-3">
-      <div className="flex justify-between text-sm mb-1">
+    <div className="mb-2">
+      <div className="flex justify-between text-xs mb-1">
         <span className="text-pp-text">{label}</span>
         <span className="text-pp-text-dim">{Math.round(value)}</span>
       </div>
-      <div className="stat-bar">
+      <div className="stat-bar h-2">
         <span 
           className={getBarColor()}
           style={{ width: `${value}%` }} 
@@ -40,20 +40,12 @@ export const StatsPanel: React.FC = () => {
     bondLevel, 
     bondProgress, 
     statusFlags,
-    mood,
-    engagement,
-    affection,
-    trust,
-    comfort,
-    streakDays,
-    unlockedClips,
-    activityCounts
+    mood
   } = usePearl();
 
   return (
-    <div className="pearl-card">
-      <div className="pearl-glow"></div>
-      <h3 className="text-lg font-semibold gradient-text mb-4">Pearl Status</h3>
+    <div className="pearl-card bg-black/80 backdrop-blur-md border border-white/20 max-w-xs">
+      <h3 className="text-sm font-semibold gradient-text mb-3">Pearl Status</h3>
       
       {/* Primary Stats */}
       <StatRow label="Hunger" value={hunger} />
@@ -62,17 +54,17 @@ export const StatsPanel: React.FC = () => {
       <StatRow label="Happiness" value={happiness} />
       
       {/* Bond Progress */}
-      <div className="mb-4 pt-3 border-t border-gray-600">
-        <div className="flex justify-between text-sm mb-1">
+      <div className="mb-3 pt-2 border-t border-gray-600">
+        <div className="flex justify-between text-xs mb-1">
           <span className="text-pp-text">Bond Level</span>
-          <span className="text-pp-accent1">{bondLevel} - {BOND_TITLES[bondLevel] || 'Max'}</span>
+          <span className="text-pp-accent1">{bondLevel}</span>
         </div>
         <StatRow label="Progress" value={bondProgress} color="bg-gradient-to-r from-pp-accent1 to-pp-accent3" />
       </div>
       
       {/* Current Mood */}
-      <div className="mb-3">
-        <div className="flex justify-between text-sm">
+      <div className="mb-2">
+        <div className="flex justify-between text-xs">
           <span className="text-pp-text">Mood</span>
           <span className={`capitalize ${
             mood === 'happy' || mood === 'playful' ? 'text-pp-accent1' :
@@ -86,13 +78,13 @@ export const StatsPanel: React.FC = () => {
       
       {/* Status Effects */}
       {statusFlags.length > 0 && (
-        <div className="mb-3">
-          <div className="text-sm text-pp-text mb-1">Status</div>
+        <div className="mb-2">
+          <div className="text-xs text-pp-text mb-1">Status</div>
           <div className="flex flex-wrap gap-1">
             {statusFlags.map(flag => (
               <span 
                 key={flag}
-                className={`px-2 py-1 rounded text-xs ${
+                className={`px-1 py-0.5 rounded text-xs ${
                   flag === 'sick' || flag === 'leavingWarning' ? 'bg-pp-error/20 text-pp-error' :
                   flag === 'withdrawn' ? 'bg-pp-warn/20 text-pp-warn' :
                   'bg-pp-accent1/20 text-pp-accent1'
@@ -104,16 +96,6 @@ export const StatsPanel: React.FC = () => {
           </div>
         </div>
       )}
-      
-      {/* Debug Info (remove in production) */}
-      <div className="pt-3 border-t border-gray-700 text-xs text-gray-500">
-        <div>Engagement: {engagement}</div>
-        <div>Affection: {Math.round(affection)}</div>
-        <div>Trust: {Math.round(trust)}</div>
-        <div>Comfort: {Math.round(comfort)}</div>
-        <div>Streak: {streakDays} days</div>
-        <div>Rare Clips: {unlockedClips.length}</div>
-      </div>
     </div>
   );
 };

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { usePearl } from '../state/pearlStore';
-import { ActionButton } from './ActionButton';
 import { ActivityModal } from './ActivityModal';
 import { VideoPlayer } from './VideoPlayer';
-import { resolveClip } from '../utils/clipResolver';
 
 export const ActionBar: React.FC = () => {
-  const { feed, talk, play, wash, sleepAssist, tidy, comfort, confide, giveGift, canPerformActivity, bondLevel } = usePearl();
+  const { feed, talk, play, wash, canPerformActivity } = usePearl();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<any>(null);
   const [activityClip, setActivityClip] = useState<string | null>(null);
@@ -26,21 +24,6 @@ export const ActionBar: React.FC = () => {
         break;
       case 'wash':
         result = wash();
-        break;
-      case 'sleep':
-        result = sleepAssist();
-        break;
-      case 'tidy':
-        result = tidy();
-        break;
-      case 'comfort':
-        result = comfort();
-        break;
-      case 'confide':
-        result = confide();
-        break;
-      case 'gift':
-        result = giveGift(options || 'flower');
         break;
       default:
         return;
@@ -81,73 +64,80 @@ export const ActionBar: React.FC = () => {
         </div>
       )}
       
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-4">
-        <ActionButton 
-          label="Feed" 
-          onClick={() => setActiveModal('feed')} 
-          primary 
-          disabled={false}
-        />
-        <ActionButton 
-          label="Talk" 
-          onClick={() => setActiveModal('talk')} 
-          disabled={false}
-        />
-        <ActionButton 
-          label="Play" 
-          onClick={() => setActiveModal('play')} 
-          disabled={!canPerformActivity('play')}
-        />
-        <ActionButton 
-          label="Wash" 
-          onClick={() => setActiveModal('wash')} 
-          disabled={false}
-        />
-        <ActionButton 
-          label="Sleep" 
-          onClick={() => setActiveModal('sleep')} 
-          disabled={!canPerformActivity('sleepAssist')}
-        />
-      </div>
-      
-      {/* Advanced Activities Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <ActionButton 
-          label="Tidy" 
-          onClick={() => setActiveModal('tidy')} 
-          disabled={!canPerformActivity('tidy')}
-        />
-        <ActionButton 
-          label="Comfort" 
-          onClick={() => setActiveModal('comfort')} 
-          disabled={false}
-        />
-        <ActionButton 
-          label="Confide" 
-          onClick={() => setActiveModal('confide')} 
-          disabled={bondLevel < 3}
-        />
-        <ActionButton 
-          label="Gift" 
-          onClick={() => setActiveModal('gift')} 
-          disabled={false}
-        />
+      {/* Bottom Action Bar */}
+      <div className="bg-black/80 backdrop-blur-md border-t border-white/20 p-4">
+        <div className="flex justify-around items-center max-w-md mx-auto">
+          {/* Feed Button */}
+          <button
+            onClick={() => setActiveModal('feed')}
+            className="group flex flex-col items-center p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95"
+          >
+            <div className="text-3xl mb-1 group-hover:drop-shadow-[0_0_12px_rgba(255,202,58,0.8)]">
+              🍲
+            </div>
+            <span className="text-xs font-semibold text-white group-hover:text-[#FFCA3A]">
+              Feed
+            </span>
+          </button>
+
+          {/* Talk Button */}
+          <button
+            onClick={() => setActiveModal('talk')}
+            className="group flex flex-col items-center p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95"
+          >
+            <div className="text-3xl mb-1 group-hover:drop-shadow-[0_0_12px_rgba(138,198,209,0.8)]">
+              💬
+            </div>
+            <span className="text-xs font-semibold text-white group-hover:text-[#8AC6D1]">
+              Talk
+            </span>
+          </button>
+
+          {/* Play Button */}
+          <button
+            onClick={() => setActiveModal('play')}
+            disabled={!canPerformActivity('play')}
+            className={`group flex flex-col items-center p-3 rounded-2xl transition-all duration-300 transform ${
+              canPerformActivity('play') 
+                ? 'hover:scale-105 active:scale-95 cursor-pointer' 
+                : 'opacity-50 cursor-not-allowed'
+            }`}
+          >
+            <div className={`text-3xl mb-1 ${
+              canPerformActivity('play') 
+                ? 'group-hover:drop-shadow-[0_0_12px_rgba(160,231,229,0.8)]' 
+                : 'grayscale'
+            }`}>
+              🎮
+            </div>
+            <span className={`text-xs font-semibold ${
+              canPerformActivity('play') ? 'text-white group-hover:text-[#A0E7E5]' : 'text-gray-600'
+            }`}>
+              Play
+            </span>
+          </button>
+
+          {/* Wash Button */}
+          <button
+            onClick={() => setActiveModal('wash')}
+            className="group flex flex-col items-center p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95"
+          >
+            <div className="text-3xl mb-1 group-hover:drop-shadow-[0_0_12px_rgba(51,255,202,0.8)]">
+              🚿
+            </div>
+            <span className="text-xs font-semibold text-white group-hover:text-[#33FFCA]">
+              Wash
+            </span>
+          </button>
+        </div>
       </div>
 
+      {/* Result Message */}
       {lastResult && (
-        <div className={`mt-4 p-3 rounded-lg ${
-          lastResult.success ? 'bg-green-900/30 border border-green-600' : 'bg-red-900/30 border border-red-600'
-        }`}>
-          <p className="text-sm text-white">{lastResult.message}</p>
-          {Object.keys(lastResult.statChanges).length > 0 && (
-            <div className="text-xs text-gray-400 mt-1">
-              {Object.entries(lastResult.statChanges).map(([stat, change]) => (
-                <span key={stat} className="mr-2">
-                  {stat}: {change > 0 ? '+' : ''}{change}
-                </span>
-              ))}
-            </div>
-          )}
+        <div className={`fixed bottom-20 left-1/2 transform -translate-x-1/2 z-30 p-3 rounded-lg max-w-xs ${
+          lastResult.success ? 'bg-green-900/80 border border-green-600' : 'bg-red-900/80 border border-red-600'
+        } backdrop-blur-md`}>
+          <p className="text-sm text-white text-center">{lastResult.message}</p>
         </div>
       )}
 
