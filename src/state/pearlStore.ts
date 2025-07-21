@@ -145,8 +145,9 @@ export const usePearl = create<PearlStore>((set, get) => ({
 
   updateBondProgress: () => {
     const state = get();
-    const bondGainMultiplier = 0.4 + (state.trust / 200) + (state.comfort / 250);
-    const affectionToBond = Math.min(state.affection * bondGainMultiplier, 12); // daily cap
+    // Convert affection points to bond progress more generously
+    const bondGainMultiplier = 1.2 + (state.trust / 100) + (state.comfort / 150);
+    const affectionToBond = Math.min(state.affection * bondGainMultiplier, 25); // higher daily cap
     
     let newBondProgress = state.bondProgress + affectionToBond;
     let newBondLevel = state.bondLevel;
@@ -160,7 +161,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     set({ 
       bondLevel: newBondLevel, 
       bondProgress: clamp(newBondProgress, 0, 100),
-      affection: 0 // consumed
+      affection: Math.max(0, state.affection - Math.floor(affectionToBond / bondGainMultiplier)) // consume some affection
     });
   },
 
@@ -334,10 +335,11 @@ export const usePearl = create<PearlStore>((set, get) => ({
     set(newStats);
     get().logActivity('feed');
     
-    // Update derived stats
+    // Update derived stats and bond progress
     const happiness = get().computeHappiness();
     const mood = get().computeMood();
     set({ happiness, mood });
+    get().updateBondProgress();
     
     // Check for rare clip unlock
     const rareClip = get().checkRareClipUnlock();
