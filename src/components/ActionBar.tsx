@@ -148,10 +148,7 @@ export const ActionBar: React.FC = () => {
           </button>
           {/* Sleep Button */}
           <button
-            onClick={() => {
-              console.log('Sleep button clicked!');
-              handleActivity('sleep');
-            }}
+            onClick={() => setActiveModal('sleep')}
             className="group flex flex-col items-center p-2 sm:p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 min-w-[60px] sm:min-w-[80px]"
           >
             <div className="text-2xl sm:text-3xl mb-1 group-hover:drop-shadow-[0_0_12px_rgba(147,51,234,0.8)]">
