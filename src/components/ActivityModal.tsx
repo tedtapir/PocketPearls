@@ -135,12 +135,6 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
           <div className="space-y-4">
             <h3 className="text-xl font-semibold gradient-text">Help her rest</h3>
             <p className="text-gray-300">She looks tired. A good rest will restore her energy.</p>
-            <div className="bg-pp-surface p-6 rounded-lg border border-gray-600">
-              <div className="text-center">
-                <div className="text-4xl mb-4">😴</div>
-                <p className="text-sm text-gray-400">Sleep assistance</p>
-              </div>
-            </div>
           </div>
         );
 
