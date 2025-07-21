@@ -80,8 +80,8 @@ const CLIP_PATHS = {
     },
     sleep: {
       settling: [
-        '/videos/sleep_settling_1.mp4.mp4',
-        '/videos/sleep_settling_1.mp4.mp4'
+        '/videos/sleep_settling_1.mp4',
+        '/videos/sleep_settling_1.mp4'
       ],
       sleeping: [
         '/videos/alexa_neutral_2.mp4',
