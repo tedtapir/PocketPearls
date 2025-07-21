@@ -38,9 +38,8 @@ export const ActionBar: React.FC = () => {
     setLastResult(result);
     
     // Show activity clip if available
-    if (result.clipPath) {
+    if (result && result.clipPath) {
       setActivityClip(result.clipPath);
-      // All videos now play to completion via onEnded callback
     }
     
     // Show result briefly
