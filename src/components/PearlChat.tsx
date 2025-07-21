@@ -138,12 +138,23 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-[#1A1A28] to-[#101018] rounded-3xl w-full max-w-md h-[600px] flex flex-col border-2 border-[#33FFCA]/30"
+    <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+      {/* Background Video */}
+      <video
+        src="/videos/pearl_chat_1.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      
+      {/* Chat Interface Overlay */}
+      <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-3xl w-full max-w-md h-[600px] flex flex-col border-2 border-[#33FFCA]/30 m-4"
            style={{ boxShadow: '0 0 40px rgba(51, 255, 202, 0.3)' }}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
+        <div className="flex items-center justify-between p-6 border-b border-white/20">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-[#33FFCA] to-[#FF66B3] rounded-full flex items-center justify-center">
               <Heart className="w-5 h-5 text-white" />
@@ -172,7 +183,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
 
         {/* Settings Panel */}
         {showSettings && (
-          <div className="p-4 border-b border-gray-700/50 bg-[#2A3140]/50">
+          <div className="p-4 border-b border-white/20 bg-black/40">
             <h4 className="text-white text-sm font-semibold mb-2">OpenAI API Key</h4>
             <div className="flex gap-2">
               <input
@@ -180,7 +191,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="sk-..."
-                className="flex-1 bg-[#1A1A28] text-white placeholder-gray-400 rounded-lg px-3 py-2 border border-gray-600/50 focus:border-[#33FFCA] focus:outline-none transition-colors text-sm"
+                className="flex-1 bg-black/60 text-white placeholder-gray-400 rounded-lg px-3 py-2 border border-white/30 focus:border-[#33FFCA] focus:outline-none transition-colors text-sm"
               />
               <button
                 onClick={saveApiKey}
@@ -217,7 +228,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
           {/* Typing indicator */}
           {isTyping && (
             <div className="flex justify-start">
-              <div className="bg-[#2A3140] text-white p-3 rounded-2xl border border-gray-600/50">
+              <div className="bg-black/60 text-white p-3 rounded-2xl border border-white/30">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -231,7 +242,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Input */}
-        <div className="p-4 border-t border-gray-700/50">
+        <div className="p-4 border-t border-white/20">
           <div className="flex gap-3">
             <input
               type="text"
@@ -239,7 +250,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={pearlAI ? "Type your message..." : "Add OpenAI API key in settings to chat"}
-              className="flex-1 bg-[#2A3140] text-white placeholder-gray-400 rounded-xl px-4 py-3 border border-gray-600/50 focus:border-[#33FFCA] focus:outline-none transition-colors"
+              className="flex-1 bg-black/60 text-white placeholder-gray-400 rounded-xl px-4 py-3 border border-white/30 focus:border-[#33FFCA] focus:outline-none transition-colors"
               disabled={isTyping || !pearlAI}
             />
             <button
