@@ -71,11 +71,8 @@ const CLIP_PATHS = {
       ]
     },
     wash: {
-      start: [
-        '/videos/wash_start_1.mp4'
-      ],
       success: [
-        '/videos/alexa_neutral_1.mp4'
+        '/videos/wash_start_1.mp4'
       ]
     },
     sleep: {
