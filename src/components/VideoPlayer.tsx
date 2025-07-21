@@ -72,7 +72,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     };
 
     const handleTimeUpdate = () => {
-      // Start preloading next video when current video is near the end
+      // Only preload for multiple videos
       if (Array.isArray(src) && src.length > 1 && video.duration - video.currentTime < 0.5) {
         const nextIndex = (currentVideoIndex + 1) % src.length;
         const nextVideoSrc = src[nextIndex];
@@ -84,6 +84,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         }
       }
     };
+
     video.addEventListener('loadstart', handleLoadStart);
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('error', handleError);
@@ -143,7 +144,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       <video
         ref={videoRef}
         src={currentVideoSrc}
-        loop={!Array.isArray(src) && loop} // Only loop if it's a single video
+        loop={!Array.isArray(src) || src.length === 1 ? loop : false} // Loop for single videos or single-item arrays
         autoPlay={autoPlay}
         muted={muted}
         playsInline
