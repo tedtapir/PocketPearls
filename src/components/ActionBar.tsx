@@ -9,6 +9,7 @@ export const ActionBar: React.FC = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<any>(null);
   const [activityClip, setActivityClip] = useState<string | null>(null);
+  const [showAppreciation, setShowAppreciation] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
 
   const handleActivity = (activity: string, options?: any) => {
@@ -44,18 +45,31 @@ export const ActionBar: React.FC = () => {
     
     setLastResult(result);
     
-    // Show activity clip if available
-    if (result && result.clipPath && result.clipPath !== '') {
-      console.log('Setting activity clip to:', result.clipPath);
-      setActivityClip(result.clipPath);
-    } else {
-      console.log('No clipPath found in result:', result);
+    // Show activity clip if available, then appreciation
+    if (result && result.success) {
+      if (result.clipPath && result.clipPath !== '') {
+        console.log('Setting activity clip to:', result.clipPath);
+        setActivityClip(result.clipPath);
+      } else {
+        // If no activity clip, go straight to appreciation
+        setShowAppreciation(true);
+      }
     }
     
     // Show result briefly
     setTimeout(() => setLastResult(null), 3000);
   };
 
+  const handleActivityClipEnd = () => {
+    setActivityClip(null);
+    // Show appreciation after activity clip ends
+    setShowAppreciation(true);
+  };
+
+  const handleAppreciationEnd = () => {
+    setShowAppreciation(false);
+    // Return to idle animation (handled by PearlAvatar)
+  };
   return (
     <>
       {/* Activity Clip Overlay */}
@@ -67,7 +81,22 @@ export const ActionBar: React.FC = () => {
               className="w-screen h-screen"
               loop={false}
               autoPlay={true}
-              onEnded={() => setActivityClip(null)}
+              onEnded={handleActivityClipEnd}
+            />
+          </div>
+        </div>
+      )}
+      
+      {/* Appreciation Video Overlay */}
+      {showAppreciation && (
+        <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+          <div className="relative">
+            <VideoPlayer
+              src="/videos/pearl_appreciation_1.mp4"
+              className="w-screen h-screen"
+              loop={false}
+              autoPlay={true}
+              onEnded={handleAppreciationEnd}
             />
           </div>
         </div>
