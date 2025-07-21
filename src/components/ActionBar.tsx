@@ -4,7 +4,7 @@ import { ActivityModal } from './ActivityModal';
 import { VideoPlayer } from './VideoPlayer';
 
 export const ActionBar: React.FC = () => {
-  const { feed, talk, play, wash, canPerformActivity } = usePearl();
+  const { feed, talk, play, wash, tidy, canPerformActivity } = usePearl();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<any>(null);
   const [activityClip, setActivityClip] = useState<string | null>(null);
@@ -24,6 +24,9 @@ export const ActionBar: React.FC = () => {
         break;
       case 'wash':
         result = wash();
+        break;
+      case 'tidy':
+        result = tidy();
         break;
       default:
         return;
@@ -127,6 +130,18 @@ export const ActionBar: React.FC = () => {
             </span>
           </button>
         </div>
+          {/* Tidy Button */}
+          <button
+            onClick={() => setActiveModal('tidy')}
+            className="group flex flex-col items-center p-2 sm:p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 min-w-[60px] sm:min-w-[80px]"
+          >
+            <div className="text-2xl sm:text-3xl mb-1 group-hover:drop-shadow-[0_0_12px_rgba(160,231,229,0.8)]">
+              🧹
+            </div>
+            <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-[#A0E7E5]">
+              Tidy
+            </span>
+          </button>
       </div>
 
       {/* Result Message */}
