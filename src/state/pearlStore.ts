@@ -312,7 +312,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's already full and doesn't want to eat right now.",
-        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'feed', outcome: 'failure' }),
+        clipPath: '',
         statChanges: {}
       };
     }
