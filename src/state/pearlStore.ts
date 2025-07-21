@@ -145,9 +145,13 @@ export const usePearl = create<PearlStore>((set, get) => ({
 
   updateBondProgress: () => {
     const state = get();
-    // Convert affection points to bond progress more generously
-    const bondGainMultiplier = 1.2 + (state.trust / 100) + (state.comfort / 150);
-    const affectionToBond = Math.min(state.affection * bondGainMultiplier, 25); // higher daily cap
+    
+    // Only process if there's affection to convert
+    if (state.affection <= 0) return;
+    
+    // Convert affection points to bond progress - more direct conversion
+    const bondGainMultiplier = 2.0 + (state.trust / 200) + (state.comfort / 300);
+    const affectionToBond = Math.min(state.affection * bondGainMultiplier, 50); // higher daily cap
     
     let newBondProgress = state.bondProgress + affectionToBond;
     let newBondLevel = state.bondLevel;
@@ -158,10 +162,13 @@ export const usePearl = create<PearlStore>((set, get) => ({
       newBondLevel++;
     }
     
+    // Consume some affection points that were converted
+    const affectionConsumed = Math.min(state.affection, Math.floor(affectionToBond / bondGainMultiplier));
+    
     set({ 
       bondLevel: newBondLevel, 
       bondProgress: clamp(newBondProgress, 0, 100),
-      affection: Math.max(0, state.affection - Math.floor(affectionToBond / bondGainMultiplier)) // consume some affection
+      affection: Math.max(0, state.affection - affectionConsumed)
     });
   },
 
