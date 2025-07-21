@@ -20,7 +20,7 @@ export const ActionBar: React.FC = () => {
         result = talk(options);
         break;
       case 'play':
-        result = play();
+        result = play(options);
         break;
       case 'wash':
         result = wash();
@@ -92,7 +92,7 @@ export const ActionBar: React.FC = () => {
 
           {/* Play Button */}
           <button
-            onClick={() => handleActivity('play')}
+            onClick={() => setActiveModal('play')}
             disabled={!canPerformActivity('play')}
             className={`group flex flex-col items-center p-2 sm:p-3 rounded-2xl transition-all duration-300 transform min-w-[60px] sm:min-w-[80px] ${
               canPerformActivity('play') 

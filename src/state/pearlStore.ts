@@ -52,7 +52,7 @@ interface PearlStore extends PearlStats {
   tick: () => void;
   feed: (foodType?: 'healthy' | 'quick' | 'junk') => ActivityResult;
   talk: (topic: 'light' | 'supportive') => ActivityResult;
-  play: () => ActivityResult;
+  play: (playType?: 'game' | 'friend') => ActivityResult;
   wash: () => ActivityResult;
   sleepAssist: () => ActivityResult;
   
@@ -402,7 +402,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     };
   },
 
-  play: () => {
+  play: (playType = 'game') => {
     const state = get();
     const now = Date.now();
     
@@ -418,6 +418,18 @@ export const usePearl = create<PearlStore>((set, get) => ({
     // Simple success/fail based on random + mood
     const successChance = state.mood === 'happy' ? 0.8 : 0.6;
     const success = Math.random() < successChance;
+    
+    // Different messages based on play type
+    const messages = {
+      game: {
+        success: "She had fun playing the game with you!",
+        failure: "She tried her best at the game, but wasn't quite feeling it."
+      },
+      friend: {
+        success: "She enjoyed playing together as friends!",
+        failure: "She appreciated the friendly play time, even if she wasn't fully into it."
+      }
+    };
     
     if (success) {
       const newStats = {
@@ -437,7 +449,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       
       return {
         success: true,
-        message: "She had fun playing with you!",
+        message: messages[playType].success,
         clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'play', outcome: 'success' }),
         statChanges: { affection: 10, energy: -8 }
       };
@@ -450,7 +462,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       
       return {
         success: false,
-        message: "She tried her best, but wasn't quite feeling it.",
+        message: messages[playType].failure,
         clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'play', outcome: 'failure' }),
         statChanges: { affection: 4, energy: -5 }
       };

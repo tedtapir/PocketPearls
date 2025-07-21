@@ -20,6 +20,9 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
       case 'talk':
         onConfirm(selectedOption || 'light');
         break;
+      case 'play':
+        onConfirm(selectedOption || 'game');
+        break;
       default:
         onConfirm();
     }
@@ -89,12 +92,26 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
         return (
           <div className="space-y-4">
             <h3 className="text-xl font-semibold gradient-text">Play Time!</h3>
-            <p className="text-gray-300">Tap the rhythm to play together</p>
-            <div className="bg-pp-surface p-6 rounded-lg border border-gray-600">
-              <div className="text-center">
-                <div className="text-4xl mb-4">🎵</div>
-                <p className="text-sm text-gray-400">Simple tap game placeholder</p>
-              </div>
+            <div className="space-y-2">
+              {[
+                { id: 'game', label: 'Play Game', desc: 'Interactive mini-game' },
+                { id: 'friend', label: 'Play with Friend', desc: 'Social play time' }
+              ].map(option => (
+                <button
+                  key={option.id}
+                  onClick={() => setSelectedOption(option.id)}
+                  className={`w-full p-3 rounded-lg border-2 transition-all ${
+                    selectedOption === option.id
+                      ? 'border-pp-accent1 bg-pp-accent1/10'
+                      : 'border-gray-600 hover:border-pp-accent1/50'
+                  }`}
+                >
+                  <div className="text-left">
+                    <div className="font-semibold text-white">{option.label}</div>
+                    <div className="text-sm text-gray-400">{option.desc}</div>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         );
@@ -228,7 +245,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
             <button
               onClick={handleConfirm}
               className="flex-1 pp-btn primary"
-              disabled={activity === 'feed' || activity === 'talk' ? !selectedOption : false}
+              disabled={activity === 'feed' || activity === 'talk' || activity === 'play' ? !selectedOption : false}
             >
               Confirm
             </button>
