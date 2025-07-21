@@ -128,11 +128,11 @@ const CLIP_PATHS = {
   // Status-specific clips
   status: {
     sick: [
-      '/videos/sick_1.mp4.mp4',
+      '/videos/sick_1.mp4',
       '/videos/alexa_neutral_4.mp4'
     ],
     leaving: [
-      '/videos/sick_1.mp4.mp4'
+      '/videos/sick_1.mp4'
     ]
   },
   
