@@ -20,9 +20,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   fallbackEmoji = '😊'
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const preloadVideoRef = useRef<HTMLVideoElement>(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
   // Handle both single video and array of videos
   const videoSources = Array.isArray(src) ? src : [src];
@@ -42,9 +44,25 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     const handleEnded = () => {
       if (Array.isArray(src) && src.length > 1) {
-        // Move to next video in sequence
-        const nextIndex = (currentVideoIndex + 1) % src.length;
-        setCurrentVideoIndex(nextIndex);
+        // Seamless transition to preloaded video
+        const preloadVideo = preloadVideoRef.current;
+        if (preloadVideo && preloadVideo.readyState >= 2) { // HAVE_CURRENT_DATA
+          setIsTransitioning(true);
+          
+          // Swap the videos instantly
+          const nextIndex = (currentVideoIndex + 1) % src.length;
+          setCurrentVideoIndex(nextIndex);
+          
+          // Start the preloaded video immediately
+          preloadVideo.currentTime = 0;
+          preloadVideo.play().then(() => {
+            setIsTransitioning(false);
+          }).catch(console.error);
+        } else {
+          // Fallback to normal transition
+          const nextIndex = (currentVideoIndex + 1) % src.length;
+          setCurrentVideoIndex(nextIndex);
+        }
       }
       
       // Always call onEnded when video finishes
@@ -53,16 +71,31 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     };
 
+    const handleTimeUpdate = () => {
+      // Start preloading next video when current video is near the end
+      if (Array.isArray(src) && src.length > 1 && video.duration - video.currentTime < 0.5) {
+        const nextIndex = (currentVideoIndex + 1) % src.length;
+        const nextVideoSrc = src[nextIndex];
+        const preloadVideo = preloadVideoRef.current;
+        
+        if (preloadVideo && preloadVideo.src !== nextVideoSrc) {
+          preloadVideo.src = nextVideoSrc;
+          preloadVideo.load();
+        }
+      }
+    };
     video.addEventListener('loadstart', handleLoadStart);
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('error', handleError);
     video.addEventListener('ended', handleEnded);
+    video.addEventListener('timeupdate', handleTimeUpdate);
 
     return () => {
       video.removeEventListener('loadstart', handleLoadStart);
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('error', handleError);
       video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
     };
   }, [currentVideoSrc, currentVideoIndex, src, onEnded]);
 
@@ -72,26 +105,20 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setHasError(false);
     setIsLoading(true);
     setCurrentVideoIndex(0);
+    setIsTransitioning(false);
   }, [src]);
 
-  // Preload next video for seamless transition
+  // Initialize preload video element
   useEffect(() => {
     if (Array.isArray(src) && src.length > 1) {
-      const nextIndex = (currentVideoIndex + 1) % src.length;
-      const nextVideoSrc = src[nextIndex];
-      
-      // Create a hidden video element to preload the next video
-      const preloadVideo = document.createElement('video');
-      preloadVideo.src = nextVideoSrc;
-      preloadVideo.preload = 'auto';
-      preloadVideo.style.display = 'none';
-      document.body.appendChild(preloadVideo);
-      
-      return () => {
-        document.body.removeChild(preloadVideo);
-      };
+      const preloadVideo = preloadVideoRef.current;
+      if (preloadVideo) {
+        preloadVideo.muted = muted;
+        preloadVideo.playsInline = true;
+        preloadVideo.preload = 'auto';
+      }
     }
-  }, [currentVideoIndex, src]);
+  }, [src, muted]);
 
   if (hasError) {
     return (
@@ -111,6 +138,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <div className="animate-pulse text-pp-accent1">Loading...</div>
         </div>
       )}
+      
+      {/* Main video */}
       <video
         ref={videoRef}
         src={currentVideoSrc}
@@ -119,8 +148,26 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         muted={muted}
         playsInline
         className="w-full h-full object-contain"
-        style={{ opacity: isLoading ? 0 : 1 }}
+        style={{ 
+          opacity: isLoading || isTransitioning ? 0 : 1,
+          transition: 'opacity 0.1s ease-in-out'
+        }}
       />
+      
+      {/* Hidden preload video for seamless transitions */}
+      {Array.isArray(src) && src.length > 1 && (
+        <video
+          ref={preloadVideoRef}
+          muted={muted}
+          playsInline
+          className="w-full h-full object-contain absolute inset-0"
+          style={{ 
+            opacity: isTransitioning ? 1 : 0,
+            transition: 'opacity 0.1s ease-in-out',
+            zIndex: isTransitioning ? 10 : -1
+          }}
+        />
+      )}
     </div>
   );
 };
