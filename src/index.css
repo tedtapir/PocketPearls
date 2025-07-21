@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PocketPearl Brand System */
+:root {
+  --pp-bg: #0F1115;
+  --pp-bg-alt: #181C25;
+  --pp-surface: #1F2430;
+  --pp-accent1: #8FD8FF;
+  --pp-accent2: #B89CFF;
+  --pp-accent3: #FF9FD6;
+  --pp-warn: #FFB347;
+  --pp-error: #FF5F56;
+  --pp-text: #F2F7FA;
+  --pp-text-dim: #9AA6B2;
+}
+
+body {
+  background: radial-gradient(circle at 30% 20%, #1a1f29 0%, #0f1115 70%);
+  color: var(--pp-text);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.pearl-card {
+  background: var(--pp-surface);
+  border: 1px solid #2A3140;
+  border-radius: 20px;
+  padding: 1.25rem;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px #2A3140;
+}
+
+.pearl-glow {
+  background: linear-gradient(135deg, #8FD8FF33, #B89CFF33 40%, #FF9FD633);
+  filter: blur(40px);
+  position: absolute;
+  inset: -30%;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #8FD8FF, #B89CFF 50%, #FF9FD6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pp-btn {
+  position: relative;
+  background: linear-gradient(135deg, #242B38, #181C25);
+  border: 1px solid #343F4F;
+  color: var(--pp-text);
+  border-radius: 16px;
+  padding: 0.9rem 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.pp-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #8FD8FF22, #B89CFF22 50%, #FF9FD622);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.pp-btn:hover {
+  box-shadow: 0 0 12px rgba(143,216,255,0.35);
+}
+
+.pp-btn:hover::before { 
+  opacity: 1; 
+}
+
+.pp-btn:active { 
+  transform: translateY(2px) scale(0.97); 
+}
+
+.pp-btn.primary {
+  background: linear-gradient(135deg, #8FD8FF 0%, #B89CFF 55%, #FF9FD6 100%);
+  color: #0F1115;
+  border: none;
+  box-shadow: 0 0 10px rgba(184,156,255,0.5), 0 0 24px rgba(255,159,214,0.4);
+}
+
+.stat-bar {
+  height: 10px;
+  background: #2A3140;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8FD8FF, #B89CFF 50%, #FF9FD6);
+  transition: width 0.4s ease;
+}
+
+/* Pearl Pulse Animation */
+@keyframes pearlPulse {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.04); 
+  }
+}
+
+.pearl-pulse {
+  animation: pearlPulse 6s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #6B7280;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease-out;
+}

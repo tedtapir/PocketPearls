@@ -1,0 +1,35 @@
+# Place your Pearl videos in this directory
+
+## Directory Structure:
+```
+public/videos/
+├── idle_happy_1.mp4
+├── idle_happy_2.mp4
+├── idle_neutral_1.mp4
+├── idle_neutral_2.mp4
+├── idle_low_1.mp4
+├── idle_distressed_1.mp4
+├── eat_accept_1.mp4
+├── eat_refuse_1.mp4
+├── talk_attentive_1.mp4
+├── play_start_1.mp4
+├── play_success_1.mp4
+├── wash_refreshed_1.mp4
+├── sleep_settling_1.mp4
+├── tidy_satisfied_1.mp4
+├── comfort_receive_1.mp4
+├── confide_serious_1.mp4
+├── gift_accept_1.mp4
+└── rare/
+    ├── spontaneous_laugh.mp4
+    ├── thoughtful_moment.mp4
+    ├── gentle_smile.mp4
+    └── content_sigh.mp4
+```
+
+## Video Requirements:
+- Format: MP4 (H.264)
+- Resolution: 720p or 1080p
+- Duration: 2-10 seconds for activities, 10-30 seconds for idle
+- Aspect Ratio: 1:1 (square) or 16:9
+- File Size: Keep under 5MB per video for web performance
