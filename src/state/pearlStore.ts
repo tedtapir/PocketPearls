@@ -565,7 +565,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She's settling in for a good rest.",
-      clipPath: 'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/public/videos/sleep_settling_1.mp4',
+      clipPath: '/videos/sleep_settling_1.mp4',
       statChanges: { energy: 40, trust: 3, hunger: -10 }
     };
   },
