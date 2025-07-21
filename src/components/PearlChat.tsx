@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Heart, MessageCircle } from 'lucide-react';
+import { X, Send, Heart, MessageCircle, Settings } from 'lucide-react';
 import { usePearl } from '../state/pearlStore';
+import { PearlAI } from '../utils/openaiClient';
 
 interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -17,6 +18,9 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
+  const [pearlAI, setPearlAI] = useState<PearlAI | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { mood, bondLevel, hunger, energy, hygiene, happiness } = usePearl();
 
@@ -28,6 +32,15 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
     scrollToBottom();
   }, [messages]);
 
+  // Load API key from localStorage
+  useEffect(() => {
+    const savedKey = localStorage.getItem('openai_api_key');
+    if (savedKey) {
+      setApiKey(savedKey);
+      setPearlAI(new PearlAI(savedKey));
+    }
+  }, []);
+
   // Initialize with a greeting when chat opens
   useEffect(() => {
     if (isOpen && messages.length === 0) {
@@ -38,93 +51,52 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
         timestamp: Date.now()
       }]);
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen, messages.length, mood]);
 
   const getGreeting = () => {
     const greetings = {
-      happy: "Hey there! 😊 I'm feeling great today! What's on your mind?",
-      playful: "Hi! I'm in such a good mood! Want to chat about something fun? ✨",
-      neutral: "Hello! How are you doing today? I'd love to hear from you.",
-      low: "Hi... I'm feeling a bit down, but talking with you always helps.",
-      distressed: "Oh, hi... I'm not feeling my best right now, but I'm glad you're here."
+      happy: "Hey there! 😊 I'm having such a wonderful day! How are you doing?",
+      playful: "Hi! I'm feeling so energetic today! ✨ What's been the highlight of your day?",
+      neutral: "Hello! It's nice to see you. How has your day been treating you?",
+      low: "Hi... I'm feeling a bit quiet today, but I'm really glad you're here. How are you?",
+      distressed: "Oh, hi... I'm struggling a bit right now, but talking with you always helps. What's on your mind?"
     };
     return greetings[mood as keyof typeof greetings] || greetings.neutral;
   };
 
-  const getPearlPersonality = () => {
-    const bondLevelContext = bondLevel < 2 ? "getting to know each other" :
-                           bondLevel < 4 ? "becoming good friends" :
-                           "very close friends";
-    
-    const moodContext = mood === 'happy' ? "cheerful and energetic" :
-                       mood === 'playful' ? "playful and excited" :
-                       mood === 'low' ? "a bit tired but still caring" :
-                       mood === 'distressed' ? "struggling but trying to stay positive" :
-                       "calm and friendly";
-
-    return `You are Pearl, a warm and affectionate 22-year-old woman. You're currently feeling ${moodContext}. 
-    You and the player are ${bondLevelContext}. You have a rich life - you love reading, trying new cafes, 
-    and you're learning to paint watercolors. You're genuinely interested in the player's life and always 
-    respond with care and affection. Keep responses conversational and under 100 words. Use emojis sparingly 
-    but naturally. Never mention you're an AI or reference game mechanics directly.`;
+  const saveApiKey = () => {
+    if (apiKey.trim()) {
+      localStorage.setItem('openai_api_key', apiKey.trim());
+      setPearlAI(new PearlAI(apiKey.trim()));
+      setShowSettings(false);
+    }
   };
 
-  // Simulate AI response (replace with actual API call)
   const generateResponse = async (userMessage: string): Promise<string> => {
-    // This is a simplified response system - in production you'd call OpenAI API
-    const responses = {
-      happy: [
-        "That sounds wonderful! I love hearing about your day! 😊",
-        "You always know how to make me smile! Tell me more!",
-        "I'm so happy we can chat like this! What else is going on?",
-        "Your energy is contagious! I feel even better talking with you!"
-      ],
-      playful: [
-        "Ooh, that's interesting! Want to hear something funny that happened to me? ✨",
-        "You're so sweet! I was just thinking about trying that new art technique I mentioned!",
-        "I love our conversations! They always brighten my day!",
-        "You know what? You always make everything sound more exciting!"
-      ],
-      neutral: [
-        "I appreciate you sharing that with me. How are you feeling about it?",
-        "That's really thoughtful of you to tell me. I'm here to listen.",
-        "I enjoy our talks so much. What's been the best part of your day?",
-        "You always have such interesting perspectives. I'd love to hear more."
-      ],
-      low: [
-        "Thank you for being here... it means a lot to me right now.",
-        "Talking with you always helps me feel a little better.",
-        "I'm grateful for your company. Sometimes I just need a friend.",
-        "You're so kind to check on me. How are you doing?"
-      ],
-      distressed: [
-        "I... I'm trying to stay positive. Thank you for caring about me.",
-        "Your words mean so much right now. I don't know what I'd do without you.",
-        "I'm struggling a bit, but having you here helps more than you know.",
-        "Sometimes I feel overwhelmed, but you always make me feel less alone."
-      ]
-    };
-
-    const moodResponses = responses[mood as keyof typeof responses] || responses.neutral;
-    const randomResponse = moodResponses[Math.floor(Math.random() * moodResponses.length)];
-    
-    // Add some contextual responses based on keywords
-    const lowerMessage = userMessage.toLowerCase();
-    if (lowerMessage.includes('how are you') || lowerMessage.includes('feeling')) {
-      if (mood === 'happy') return "I'm feeling amazing! Everything just seems brighter today! How about you? 😊";
-      if (mood === 'low') return "I'm... okay, I guess. Just feeling a bit tired. But talking with you helps.";
-      if (mood === 'distressed') return "Honestly? I'm having a rough time. But you being here makes it better.";
-    }
-    
-    if (lowerMessage.includes('love') || lowerMessage.includes('care')) {
-      return "Aww, you're so sweet! I care about you too. You mean a lot to me. 💕";
-    }
-    
-    if (lowerMessage.includes('sorry') || lowerMessage.includes('apologize')) {
-      return "Hey, don't worry about it! We all have our moments. I'm just glad you're here now.";
+    if (!pearlAI) {
+      return "I'd love to chat, but I need an OpenAI API key to have intelligent conversations. Click the settings button to add one!";
     }
 
-    return randomResponse;
+    try {
+      const conversationHistory = messages.map(msg => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content
+      }));
+
+      conversationHistory.push({ role: 'user', content: userMessage });
+
+      const response = await pearlAI.generateResponse(
+        conversationHistory,
+        mood,
+        bondLevel,
+        { hunger, energy, hygiene, happiness }
+      );
+
+      return response;
+    } catch (error) {
+      console.error('Error generating response:', error);
+      return "I'm having trouble thinking of what to say right now... Maybe we could try again in a moment?";
+    }
   };
 
   const handleSend = async () => {
@@ -141,6 +113,8 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
     setIsTyping(true);
 
     // Simulate typing delay
+    const typingDelay = 800 + Math.random() * 1500; // 0.8-2.3 seconds
+    
     setTimeout(async () => {
       const response = await generateResponse(userMessage.content);
       const assistantMessage: Message = {
@@ -151,7 +125,7 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
 
       setMessages(prev => [...prev, assistantMessage]);
       setIsTyping(false);
-    }, 1000 + Math.random() * 2000); // 1-3 second delay
+    }, typingDelay);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -179,13 +153,47 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
               <p className="text-[#33FFCA] text-sm capitalize">{mood}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-[#33FFCA] transition-colors p-2 rounded-full hover:bg-white/5"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="text-gray-400 hover:text-[#33FFCA] transition-colors p-2 rounded-full hover:bg-white/5"
+              title="API Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-[#33FFCA] transition-colors p-2 rounded-full hover:bg-white/5"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
+
+        {/* Settings Panel */}
+        {showSettings && (
+          <div className="p-4 border-b border-gray-700/50 bg-[#2A3140]/50">
+            <h4 className="text-white text-sm font-semibold mb-2">OpenAI API Key</h4>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-..."
+                className="flex-1 bg-[#1A1A28] text-white placeholder-gray-400 rounded-lg px-3 py-2 border border-gray-600/50 focus:border-[#33FFCA] focus:outline-none transition-colors text-sm"
+              />
+              <button
+                onClick={saveApiKey}
+                className="bg-[#33FFCA] hover:bg-[#2DDDB3] text-black px-3 py-2 rounded-lg transition-colors text-sm font-semibold"
+              >
+                Save
+              </button>
+            </div>
+            <p className="text-gray-400 text-xs mt-2">
+              Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-[#33FFCA] hover:underline">OpenAI</a>
+            </p>
+          </div>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
@@ -230,13 +238,13 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
+              placeholder={pearlAI ? "Type your message..." : "Add OpenAI API key in settings to chat"}
               className="flex-1 bg-[#2A3140] text-white placeholder-gray-400 rounded-xl px-4 py-3 border border-gray-600/50 focus:border-[#33FFCA] focus:outline-none transition-colors"
-              disabled={isTyping}
+              disabled={isTyping || !pearlAI}
             />
             <button
               onClick={handleSend}
-              disabled={!input.trim() || isTyping}
+              disabled={!input.trim() || isTyping || !pearlAI}
               className="bg-gradient-to-r from-[#33FFCA] to-[#2DDDB3] hover:from-[#2DDDB3] hover:to-[#33FFCA] text-black p-3 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               <Send className="w-5 h-5" />
