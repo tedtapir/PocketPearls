@@ -92,7 +92,7 @@ const CLIP_PATHS = {
     },
     tidy: {
       before: [
-        '/videos/tidy_before_1.mp4.mp4'
+        '/videos/tidy_before_1.mp4'
       ],
       success: [
         '/videos/alexa_neutral_1.mp4'

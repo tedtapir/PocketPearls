@@ -611,7 +611,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She feels better with a tidy space!",
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'tidy', outcome: 'success' }),
+      clipPath: '/videos/tidy_before_1.mp4',
       statChanges: { trust: 2, affection: 6, energy: -8 }
     };
   },
