@@ -115,7 +115,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         autoPlay={autoPlay}
         muted={muted}
         playsInline
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
         style={{ opacity: isLoading ? 0 : 1 }}
       />
     </div>
