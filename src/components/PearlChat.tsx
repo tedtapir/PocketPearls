@@ -151,118 +151,102 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
         />
       </div>
       
-      {/* Chat Interface Overlay */}
-      <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-3xl w-full max-w-md h-[600px] flex flex-col border-2 border-[#33FFCA]/30"
-           style={{ boxShadow: '0 0 40px rgba(51, 255, 202, 0.3)' }}>
-        
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/20">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#33FFCA] to-[#FF66B3] rounded-full flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 className="text-white font-semibold">Pearl</h3>
-              <p className="text-[#33FFCA] text-sm capitalize">{mood}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowSettings(!showSettings)}
-              className="text-gray-400 hover:text-[#33FFCA] transition-colors p-2 rounded-full hover:bg-white/5"
-              title="API Settings"
-            >
-              <Settings className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-[#33FFCA] transition-colors p-2 rounded-full hover:bg-white/5"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+      {/* Close Button */}
+      <button
+        onClick={onClose}
+        className="fixed top-4 right-4 z-20 text-white hover:text-[#33FFCA] transition-colors p-2 rounded-full bg-black/50 backdrop-blur-sm"
+      >
+        <X className="w-6 h-6" />
+      </button>
 
-        {/* Settings Panel */}
-        {showSettings && (
-          <div className="p-4 border-b border-white/20 bg-black/40">
-            <h4 className="text-white text-sm font-semibold mb-2">OpenAI API Key</h4>
-            <div className="flex gap-2">
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="sk-..."
-                className="flex-1 bg-black/60 text-white placeholder-gray-400 rounded-lg px-3 py-2 border border-white/30 focus:border-[#33FFCA] focus:outline-none transition-colors text-sm"
-              />
-              <button
-                onClick={saveApiKey}
-                className="bg-[#33FFCA] hover:bg-[#2DDDB3] text-black px-3 py-2 rounded-lg transition-colors text-sm font-semibold"
-              >
-                Save
-              </button>
-            </div>
-            <p className="text-gray-400 text-xs mt-2">
-              Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-[#33FFCA] hover:underline">OpenAI</a>
-            </p>
-          </div>
-        )}
+      {/* Settings Button */}
+      <button
+        onClick={() => setShowSettings(!showSettings)}
+        className="fixed top-4 left-4 z-20 text-white hover:text-[#33FFCA] transition-colors p-2 rounded-full bg-black/50 backdrop-blur-sm"
+        title="API Settings"
+      >
+        <Settings className="w-6 h-6" />
+      </button>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[80%] p-3 rounded-2xl ${
-                  message.role === 'user'
-                    ? 'bg-gradient-to-r from-[#33FFCA] to-[#2DDDB3] text-black'
-                    : 'bg-[#2A3140] text-white border border-gray-600/50'
-                }`}
-              >
-                <p className="text-sm leading-relaxed">{message.content}</p>
-              </div>
-            </div>
-          ))}
-          
-          {/* Typing indicator */}
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-black/60 text-white p-3 rounded-2xl border border-white/30">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input */}
-        <div className="p-4 border-t border-white/20">
-          <div className="flex gap-3">
+      {/* Settings Panel */}
+      {showSettings && (
+        <div className="fixed top-16 left-4 z-20 bg-black/80 backdrop-blur-sm rounded-xl p-4 border border-white/30">
+          <h4 className="text-white text-sm font-semibold mb-2">OpenAI API Key</h4>
+          <div className="flex gap-2">
             <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={pearlAI ? "Type your message..." : "Add OpenAI API key in settings to chat"}
-              className="flex-1 bg-black/60 text-white placeholder-gray-400 rounded-xl px-4 py-3 border border-white/30 focus:border-[#33FFCA] focus:outline-none transition-colors"
-              disabled={isTyping || !pearlAI}
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="sk-..."
+              className="flex-1 bg-black/60 text-white placeholder-gray-400 rounded-lg px-3 py-2 border border-white/30 focus:border-[#33FFCA] focus:outline-none transition-colors text-sm"
             />
             <button
-              onClick={handleSend}
-              disabled={!input.trim() || isTyping || !pearlAI}
-              className="bg-gradient-to-r from-[#33FFCA] to-[#2DDDB3] hover:from-[#2DDDB3] hover:to-[#33FFCA] text-black p-3 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              onClick={saveApiKey}
+              className="bg-[#33FFCA] hover:bg-[#2DDDB3] text-black px-3 py-2 rounded-lg transition-colors text-sm font-semibold"
             >
-              <Send className="w-5 h-5" />
+              Save
             </button>
           </div>
+          <p className="text-gray-400 text-xs mt-2">
+            Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-[#33FFCA] hover:underline">OpenAI</a>
+          </p>
+        </div>
+      )}
+
+      {/* Messages - Positioned over video */}
+      <div className="fixed bottom-20 left-4 right-4 z-10 max-h-80 overflow-y-auto space-y-3 custom-scrollbar">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`max-w-[70%] p-3 rounded-2xl ${
+                message.role === 'user'
+                  ? 'bg-gradient-to-r from-[#33FFCA] to-[#2DDDB3] text-black'
+                  : 'bg-black/80 text-white border border-white/30 backdrop-blur-sm'
+              }`}
+            >
+              <p className="text-sm leading-relaxed">{message.content}</p>
+            </div>
+          </div>
+        ))}
+        
+        {/* Typing indicator */}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-black/80 text-white p-3 rounded-2xl border border-white/30 backdrop-blur-sm">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-[#33FFCA] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input Box - Fixed at bottom */}
+      <div className="fixed bottom-4 left-4 right-4 z-10">
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder={pearlAI ? "Type your message..." : "Add OpenAI API key in settings to chat"}
+            className="flex-1 bg-black/80 text-white placeholder-gray-400 rounded-xl px-4 py-3 border border-white/30 focus:border-[#33FFCA] focus:outline-none transition-colors backdrop-blur-sm"
+            disabled={isTyping || !pearlAI}
+          />
+          <button
+            onClick={handleSend}
+            disabled={!input.trim() || isTyping || !pearlAI}
+            className="bg-gradient-to-r from-[#33FFCA] to-[#2DDDB3] hover:from-[#2DDDB3] hover:to-[#33FFCA] text-black p-3 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          >
+            <Send className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </div>
