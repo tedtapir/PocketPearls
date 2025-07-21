@@ -19,37 +19,37 @@ export const AnalyticsDashboard: React.FC = () => {
   const BOND_TITLES = ['Acquainted', 'Familiar', 'Comfortable', 'Trusted', 'Close', 'Attached', 'Cherished'];
 
   return (
-    <div className="pearl-card bg-black/80 backdrop-blur-md border border-white/20 max-w-xs">
-      <h3 className="text-sm font-semibold gradient-text mb-3">Your Journey</h3>
+    <div className="pearl-card bg-black/80 backdrop-blur-md border border-white/20 w-full">
+      <h3 className="text-xs sm:text-sm font-semibold gradient-text mb-2 sm:mb-3">Your Journey</h3>
       
-      <div className="grid grid-cols-2 gap-3 text-xs">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs">
         <div className="text-center">
-          <div className="text-lg font-bold text-pp-accent1">{sessionCount}</div>
+          <div className="text-sm sm:text-lg font-bold text-pp-accent1">{sessionCount}</div>
           <div className="text-gray-400">Sessions</div>
         </div>
         
         <div className="text-center">
-          <div className="text-lg font-bold text-pp-accent2">{streakDays}</div>
+          <div className="text-sm sm:text-lg font-bold text-pp-accent2">{streakDays}</div>
           <div className="text-gray-400">Day Streak</div>
         </div>
         
         <div className="text-center">
-          <div className="text-lg font-bold text-pp-accent3">{totalActivities}</div>
+          <div className="text-sm sm:text-lg font-bold text-pp-accent3">{totalActivities}</div>
           <div className="text-gray-400">Activities</div>
         </div>
         
         <div className="text-center">
-          <div className="text-lg font-bold text-pp-accent1">{unlockedClips.length}</div>
+          <div className="text-sm sm:text-lg font-bold text-pp-accent1">{unlockedClips.length}</div>
           <div className="text-gray-400">Rare Moments</div>
         </div>
       </div>
       
-      <div className="mt-3 pt-3 border-t border-gray-700">
+      <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-700">
         <div className="text-xs text-gray-300 mb-1">Most Used Activity</div>
         <div className="text-pp-accent1 font-semibold capitalize text-xs">{favoriteActivity}</div>
       </div>
       
-      <div className="mt-3">
+      <div className="mt-2 sm:mt-3">
         <div className="text-xs text-gray-300 mb-1">Bond Progress</div>
         <div className="text-pp-accent2 text-xs">Level {bondLevel} - {BOND_TITLES[bondLevel] || 'Max'}</div>
       </div>

@@ -44,8 +44,8 @@ export const StatsPanel: React.FC = () => {
   } = usePearl();
 
   return (
-    <div className="pearl-card bg-black/80 backdrop-blur-md border border-white/20 max-w-xs">
-      <h3 className="text-sm font-semibold gradient-text mb-3">Pearl Status</h3>
+    <div className="pearl-card bg-black/80 backdrop-blur-md border border-white/20 w-full">
+      <h3 className="text-xs sm:text-sm font-semibold gradient-text mb-2 sm:mb-3">Pearl Status</h3>
       
       {/* Primary Stats */}
       <StatRow label="Hunger" value={hunger} />
@@ -54,7 +54,7 @@ export const StatsPanel: React.FC = () => {
       <StatRow label="Happiness" value={happiness} />
       
       {/* Bond Progress */}
-      <div className="mb-3 pt-2 border-t border-gray-600">
+      <div className="mb-2 sm:mb-3 pt-2 border-t border-gray-600">
         <div className="flex justify-between text-xs mb-1">
           <span className="text-pp-text">Bond Level</span>
           <span className="text-pp-accent1">{bondLevel}</span>

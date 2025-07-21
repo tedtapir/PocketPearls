@@ -56,10 +56,10 @@ export const PearlAvatar: React.FC = () => {
   }, [mood, statusFlags, bondLevel]);
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative overflow-hidden">
       <VideoPlayer
         src={clipPaths}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover object-center"
         fallbackEmoji={fallbackEmoji}
         loop={true}
         autoPlay={true}
