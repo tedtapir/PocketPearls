@@ -294,41 +294,6 @@ export const usePearl = create<PearlStore>((set, get) => ({
     // Check status changes
     get().checkStatusFlags();
   },
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { affection: finalAffection, comfort: gift.comfort }, message: gift.message }
-    }));
-    
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { trust: story.trust, comfort: story.comfort, affection: 8 }, message: story.message }
-    }));
-    
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { hygiene: 20, energy: 15, affection: 8, trust: 5 }, message: "She's feeling much better now!" }
-    }));
-    
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { trust: 2, affection: 6, energy: -8 }, message: "She feels better with a tidy space!" }
-    }));
-    
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { energy: 40, trust: 3, hunger: -10 }, message: "She's settling in for a good rest." }
-    }));
-    
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { hygiene: 30, comfort: 4, energy: -5 }, message: "She feels much more refreshed now!" }
-    }));
-    
-    // Dispatch notification event
-    window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { affection: effect.affection, comfort: effect.comfort }, message: `She appreciated your ${topic} conversation.` }
-    }));
-    
 
   feed: (foodType = 'healthy') => {
     const state = get();
