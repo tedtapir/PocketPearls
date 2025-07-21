@@ -522,8 +522,10 @@ export const usePearl = create<PearlStore>((set, get) => ({
   sleepAssist: () => {
     const state = get();
     const now = Date.now();
+    console.log('sleepAssist called, current state:', { energy: state.energy, hunger: state.hunger });
     
     if (!get().canPerformActivity('sleepAssist')) {
+      console.log('Cannot perform sleep activity');
       return {
         success: false,
         message: "She's not tired enough for sleep right now.",
@@ -533,6 +535,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     }
     
     if (state.hunger < 20) {
+      console.log('Too hungry to sleep');
       return {
         success: false,
         message: "She's too hungry to sleep comfortably.",
@@ -541,6 +544,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       };
     }
     
+    console.log('Sleep activity successful, returning clipPath: /videos/sleep_settling_1.mp4');
     const newStats = {
       energy: clamp(state.energy + 40),
       hunger: clamp(state.hunger - 10),

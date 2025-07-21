@@ -10,6 +10,7 @@ export const ActionBar: React.FC = () => {
   const [activityClip, setActivityClip] = useState<string | null>(null);
 
   const handleActivity = (activity: string, options?: any) => {
+    console.log('handleActivity called with:', activity, options);
     let result;
     
     switch (activity) {
@@ -30,6 +31,7 @@ export const ActionBar: React.FC = () => {
         break;
       case 'sleep':
         result = sleepAssist();
+        console.log('sleepAssist result:', result);
         break;
       default:
         return;
@@ -38,8 +40,11 @@ export const ActionBar: React.FC = () => {
     setLastResult(result);
     
     // Show activity clip if available
-    if (result && result.clipPath) {
+    if (result && result.clipPath && result.clipPath !== '') {
+      console.log('Setting activity clip to:', result.clipPath);
       setActivityClip(result.clipPath);
+    } else {
+      console.log('No clipPath found in result:', result);
     }
     
     // Show result briefly
