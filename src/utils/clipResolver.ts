@@ -11,30 +11,30 @@ const CLIP_PATHS = {
   // Idle clips based on mood
   idle: {
     happy: [
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_3.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4',
+      '/videos/alexa_neutral_3.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ],
     neutral: [
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_3.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4',
+      '/videos/alexa_neutral_3.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ],
     low: [
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4'
     ],
     distressed: [
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4'
     ],
     playful: [
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_3.mp4',
-      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4',
+      '/videos/alexa_neutral_3.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ]
   },
   
