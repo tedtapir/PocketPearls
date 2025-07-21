@@ -127,7 +127,10 @@ const CLIP_PATHS = {
   // Status-specific clips
   status: {
     sick: [
-      '/videos/alexa_neutral_4.mp4'
+      '/videos/pearl_sick_idle_1.mp4'
+    ],
+    sad: [
+      '/videos/pearl_sad_1.mp4'
     ],
     leaving: [
       '/videos/pearl_idle_1.mp4'
@@ -153,6 +156,10 @@ export function resolveClip({ mood, statusFlags, activity, outcome, bondLevel }:
   // Priority 1: Status flags override everything
   if (statusFlags.includes('sick')) {
     return getRandomClip(CLIP_PATHS.status.sick) as string;
+  }
+  
+  if (statusFlags.includes('sad')) {
+    return getRandomClip(CLIP_PATHS.status.sad) as string;
   }
   
   if (statusFlags.includes('leavingWarning')) {
@@ -186,6 +193,10 @@ export function resolveClipSequence({ mood, statusFlags, activity, outcome, bond
   // Priority 1: Status flags override everything
   if (statusFlags.includes('sick')) {
     return CLIP_PATHS.status.sick;
+  }
+  
+  if (statusFlags.includes('sad')) {
+    return CLIP_PATHS.status.sad;
   }
   
   if (statusFlags.includes('leavingWarning')) {
