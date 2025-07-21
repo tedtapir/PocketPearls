@@ -37,10 +37,7 @@ export const ActionBar: React.FC = () => {
     // Show activity clip if available
     if (result.clipPath) {
       setActivityClip(result.clipPath);
-      // Don't auto-hide for wash - let video play to completion
-      if (activity !== 'wash') {
-        setTimeout(() => setActivityClip(null), 3000);
-      }
+      // All videos now play to completion via onEnded callback
     }
     
     // Show result briefly

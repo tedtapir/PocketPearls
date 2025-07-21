@@ -45,7 +45,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         // Move to next video in sequence
         const nextIndex = (currentVideoIndex + 1) % src.length;
         setCurrentVideoIndex(nextIndex);
-      } else if (onEnded) {
+      }
+      
+      // Always call onEnded when video finishes
+      if (onEnded) {
         onEnded();
       }
     };
