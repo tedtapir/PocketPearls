@@ -11,30 +11,30 @@ const CLIP_PATHS = {
   // Idle clips based on mood
   idle: {
     happy: [
-      '/videos/idle_neutral_1.mp4',
-      '/videos/idle_neutral_2.mp4',
-      '/videos/idle_neutral_3.mp4',
-      '/videos/idle_neutral_4.mp4'
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_3.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_4.mp4'
     ],
     neutral: [
-      '/videos/idle_neutral_1.mp4',
-      '/videos/idle_neutral_2.mp4',
-      '/videos/idle_neutral_3.mp4',
-      '/videos/idle_neutral_4.mp4'
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_3.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_4.mp4'
     ],
     low: [
-      '/videos/idle_neutral_1.mp4',
-      '/videos/idle_neutral_2.mp4'
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4'
     ],
     distressed: [
-      '/videos/idle_neutral_1.mp4',
-      '/videos/idle_neutral_2.mp4'
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4'
     ],
     playful: [
-      '/videos/idle_neutral_1.mp4',
-      '/videos/idle_neutral_2.mp4',
-      '/videos/idle_neutral_3.mp4',
-      '/videos/idle_neutral_4.mp4'
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_1.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_2.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_3.mp4',
+      'https://github.com/tedtapir/PocketPearls/raw/refs/heads/main/alexa_neutral_4.mp4'
     ]
   },
   
