@@ -39,26 +39,45 @@ export class PearlAI {
       frequency_penalty: 0.1
     };
 
-    try {
-      const response = await fetch(this.baseURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify(payload)
-      });
+    const maxRetries = 3;
+    let retryCount = 0;
 
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
+    while (retryCount <= maxRetries) {
+      try {
+        const response = await fetch(this.baseURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.apiKey}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.status === 429 && retryCount < maxRetries) {
+          // Rate limited - wait with exponential backoff
+          const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+          console.log(`Rate limited. Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          retryCount++;
+          continue;
+        }
+
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${response.status}`);
+        }
+
+        const data: OpenAIResponse = await response.json();
+        return data.choices[0]?.message?.content?.trim() || "I'm not sure how to respond to that right now...";
+      } catch (error) {
+        if (retryCount === maxRetries) {
+          console.error('OpenAI API Error after retries:', error);
+          return this.getFallbackResponse(mood);
+        }
+        retryCount++;
       }
-
-      const data: OpenAIResponse = await response.json();
-      return data.choices[0]?.message?.content?.trim() || "I'm not sure how to respond to that right now...";
-    } catch (error) {
-      console.error('OpenAI API Error:', error);
-      return this.getFallbackResponse(mood);
     }
+
+    return this.getFallbackResponse(mood);
   }
 
   private createSystemPrompt(mood: string, bondLevel: number, stats: any): string {
