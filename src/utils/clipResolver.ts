@@ -155,36 +155,69 @@ const CLIP_PATHS = {
 export function resolveClip({ mood, statusFlags, activity, outcome, bondLevel }: ClipResolverParams): string {
   // Priority 1: Status flags override everything
   if (statusFlags.includes('sick')) {
-    return getRandomClip(CLIP_PATHS.status.sick);
+    return getRandomClip(CLIP_PATHS.status.sick) as string;
   }
   
   if (statusFlags.includes('leavingWarning')) {
-    return getRandomClip(CLIP_PATHS.status.leaving);
+    return getRandomClip(CLIP_PATHS.status.leaving) as string;
   }
   
   // Priority 2: Activity-specific clips
   if (activity && outcome) {
     const activityClips = CLIP_PATHS.activities[activity as keyof typeof CLIP_PATHS.activities];
     if (activityClips && activityClips[outcome as keyof typeof activityClips]) {
-      return getRandomClip(activityClips[outcome as keyof typeof activityClips]);
+      return getRandomClip(activityClips[outcome as keyof typeof activityClips]) as string;
     }
   }
   
   // Priority 3: Mood-based idle clips
   if (statusFlags.includes('playful')) {
-    return getRandomClip(CLIP_PATHS.idle.playful);
+    return getRandomClip(CLIP_PATHS.idle.playful) as string;
   }
   
   const moodClips = CLIP_PATHS.idle[mood as keyof typeof CLIP_PATHS.idle];
   if (moodClips) {
-    return getRandomClip(moodClips);
+    return getRandomClip(moodClips) as string;
   }
   
   // Fallback to neutral
-  return getRandomClip(CLIP_PATHS.idle.neutral);
+  return getRandomClip(CLIP_PATHS.idle.neutral) as string;
 }
 
-function getRandomClip(clips: string[]): string {
+// New function to get all clips for seamless playback
+export function resolveClipSequence({ mood, statusFlags, activity, outcome, bondLevel }: ClipResolverParams): string[] {
+  // Priority 1: Status flags override everything
+  if (statusFlags.includes('sick')) {
+    return CLIP_PATHS.status.sick;
+  }
+  
+  if (statusFlags.includes('leavingWarning')) {
+    return CLIP_PATHS.status.leaving;
+  }
+  
+  // Priority 2: Activity-specific clips
+  if (activity && outcome) {
+    const activityClips = CLIP_PATHS.activities[activity as keyof typeof CLIP_PATHS.activities];
+    if (activityClips && activityClips[outcome as keyof typeof activityClips]) {
+      return activityClips[outcome as keyof typeof activityClips];
+    }
+  }
+  
+  // Priority 3: Mood-based idle clips
+  if (statusFlags.includes('playful')) {
+    return CLIP_PATHS.idle.playful;
+  }
+  
+  const moodClips = CLIP_PATHS.idle[mood as keyof typeof CLIP_PATHS.idle];
+  if (moodClips) {
+    return moodClips;
+  }
+  
+  // Fallback to neutral
+  return CLIP_PATHS.idle.neutral;
+}
+
+function getRandomClip(clips: string[]): string | string[] {
   return clips[Math.floor(Math.random() * clips.length)];
 }
 

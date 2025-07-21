@@ -1,33 +1,33 @@
 import React, { useMemo } from 'react';
 import { usePearl } from '../state/pearlStore';
 import { VideoPlayer } from './VideoPlayer';
-import { resolveClip, getMoodEmoji } from '../utils/clipResolver';
+import { resolveClipSequence, getMoodEmoji } from '../utils/clipResolver';
 
 export const PearlAvatar: React.FC = () => {
   const { mood, statusFlags, bondLevel } = usePearl();
   
-  const { clipPath, fallbackEmoji, pearlColor } = useMemo(() => {
+  const { clipPaths, fallbackEmoji, pearlColor } = useMemo(() => {
     console.log('Current mood:', mood, 'Status flags:', statusFlags);
     
     // Status flags override mood
     if (statusFlags.includes('sick')) {
       return { 
-        clipPath: resolveClip({ mood, statusFlags }), 
+        clipPaths: resolveClipSequence({ mood, statusFlags }), 
         fallbackEmoji: '😔', 
         pearlColor: '#8B5A5A' 
       };
     }
     if (statusFlags.includes('leavingWarning')) {
       return { 
-        clipPath: resolveClip({ mood, statusFlags }), 
+        clipPaths: resolveClipSequence({ mood, statusFlags }), 
         fallbackEmoji: '😔', 
         pearlColor: '#5A5A8B' 
       };
     }
     
     // Mood-based selection
-    const clipPath = resolveClip({ mood, statusFlags, bondLevel });
-    console.log('Selected clip path:', clipPath);
+    const clipPaths = resolveClipSequence({ mood, statusFlags, bondLevel });
+    console.log('Selected clip paths:', clipPaths);
     let pearlColor = '#8FD8FF';
     
     switch (mood) {
@@ -49,7 +49,7 @@ export const PearlAvatar: React.FC = () => {
     }
     
     return { 
-      clipPath, 
+      clipPaths, 
       fallbackEmoji: '😊', 
       pearlColor 
     };
@@ -90,7 +90,7 @@ export const PearlAvatar: React.FC = () => {
         }}
       >
         <VideoPlayer
-          src={clipPath}
+          src={clipPaths}
           className="w-44 h-44 rounded-full overflow-hidden"
           fallbackEmoji={fallbackEmoji}
           loop={true}
