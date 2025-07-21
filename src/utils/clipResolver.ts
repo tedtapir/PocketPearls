@@ -11,10 +11,10 @@ const CLIP_PATHS = {
   // Idle clips based on mood
   idle: {
     happy: [
-      '/videos/alexa_happy_1.mp4',
-      '/videos/alexa_happy_2.mp4',
-      '/videos/alexa_happy_3.mp4',
-      '/videos/alexa_happy_4.mp4'
+      'https://your-cdn.com/videos/alexa_happy_1.mp4',
+      'https://your-cdn.com/videos/alexa_happy_2.mp4',
+      'https://your-cdn.com/videos/alexa_happy_3.mp4',
+      'https://your-cdn.com/videos/alexa_happy_4.mp4'
     ],
     neutral: [
       '/videos/alexa_neutral_1.mp4',
@@ -23,18 +23,18 @@ const CLIP_PATHS = {
       '/videos/alexa_neutral_4.mp4'
     ],
     low: [
-      '/videos/alexa_low_1.mp4',
-      '/videos/alexa_low_2.mp4'
+      'https://your-cdn.com/videos/alexa_low_1.mp4',
+      'https://your-cdn.com/videos/alexa_low_2.mp4'
     ],
     distressed: [
-      '/videos/alexa_distressed_1.mp4',
-      '/videos/alexa_distressed_2.mp4'
+      'https://your-cdn.com/videos/alexa_distressed_1.mp4',
+      'https://your-cdn.com/videos/alexa_distressed_2.mp4'
     ],
     playful: [
-      '/videos/alexa_playful_1.mp4',
-      '/videos/alexa_playful_2.mp4',
-      '/videos/alexa_playful_3.mp4',
-      '/videos/alexa_playful_4.mp4'
+      'https://your-cdn.com/videos/alexa_playful_1.mp4',
+      'https://your-cdn.com/videos/alexa_playful_2.mp4',
+      'https://your-cdn.com/videos/alexa_playful_3.mp4',
+      'https://your-cdn.com/videos/alexa_playful_4.mp4'
     ]
   },
   
@@ -42,20 +42,20 @@ const CLIP_PATHS = {
   activities: {
     feed: {
       success: [
-        '/videos/eat_accept_1.mp4',
-        '/videos/eat_accept_2.mp4'
+        'https://your-cdn.com/videos/eat_accept_1.mp4',
+        'https://your-cdn.com/videos/eat_accept_2.mp4'
       ],
       failure: [
-        '/videos/eat_refuse_1.mp4'
+        'https://your-cdn.com/videos/eat_refuse_1.mp4'
       ]
     },
     talk: {
       success: [
-        '/videos/talk_attentive_1.mp4',
-        '/videos/talk_attentive_2.mp4'
+        'https://your-cdn.com/videos/talk_attentive_1.mp4',
+        'https://your-cdn.com/videos/talk_attentive_2.mp4'
       ],
       failure: [
-        '/videos/talk_flat_1.mp4'
+        'https://your-cdn.com/videos/talk_flat_1.mp4'
       ]
     },
     play: {
