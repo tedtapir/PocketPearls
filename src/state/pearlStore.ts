@@ -307,6 +307,16 @@ export const usePearl = create<PearlStore>((set, get) => ({
     const state = get();
     const now = Date.now();
     
+    // Check if already full
+    if (state.hunger >= 100) {
+      return {
+        success: false,
+        message: "She's already full and doesn't want to eat right now.",
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'feed', outcome: 'failure' }),
+        statChanges: {}
+      };
+    }
+    
     // Check rejection conditions
     if (state.hunger > 80 && state.trust < 30 && Math.random() < 0.2) {
       return {
