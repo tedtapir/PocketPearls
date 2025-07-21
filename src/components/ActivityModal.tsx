@@ -94,8 +94,8 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
             <h3 className="text-xl font-semibold gradient-text">Play Time!</h3>
             <div className="space-y-2">
               {[
-                { id: 'game', label: 'Play Game', desc: 'Interactive mini-game' },
-                { id: 'friend', label: 'Play with Friend', desc: 'Social play time' }
+                { id: 'game', label: 'Play Game', desc: '' },
+                { id: 'friend', label: 'Play with Friend', desc: '' }
               ].map(option => (
                 <button
                   key={option.id}
@@ -108,7 +108,7 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
                 >
                   <div className="text-left">
                     <div className="font-semibold text-white">{option.label}</div>
-                    <div className="text-sm text-gray-400">{option.desc}</div>
+                    {option.desc && <div className="text-sm text-gray-400">{option.desc}</div>}
                   </div>
                 </button>
               ))}
