@@ -11,30 +11,30 @@ const CLIP_PATHS = {
   // Idle clips based on mood
   idle: {
     happy: [
-      '/videos/alexa_neutral_1.mp4.mp4',
-      '/videos/alexa_neutral_2.mp4.mp4',
-      '/videos/alexa_neutral_3.mp4.mp4',
-      '/videos/alexa_neutral_4.mp4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4',
+      '/videos/alexa_neutral_3.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ],
     neutral: [
-      '/videos/alexa_neutral_1.mp4.mp4',
-      '/videos/alexa_neutral_2.mp4.mp4',
-      '/videos/alexa_neutral_3.mp4.mp4',
-      '/videos/alexa_neutral_4.mp4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4',
+      '/videos/alexa_neutral_3.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ],
     low: [
-      '/videos/alexa_neutral_1.mp4.mp4',
-      '/videos/alexa_neutral_2.mp4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4'
     ],
     distressed: [
-      '/videos/sick_1.mp4.mp4',
-      '/videos/alexa_neutral_1.mp4.mp4'
+      '/videos/sick_1.mp4',
+      '/videos/alexa_neutral_1.mp4'
     ],
     playful: [
-      '/videos/alexa_neutral_1.mp4.mp4',
-      '/videos/alexa_neutral_2.mp4.mp4',
-      '/videos/alexa_neutral_3.mp4.mp4',
-      '/videos/alexa_neutral_4.mp4.mp4'
+      '/videos/alexa_neutral_1.mp4',
+      '/videos/alexa_neutral_2.mp4',
+      '/videos/alexa_neutral_3.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ]
   },
   
@@ -42,86 +42,86 @@ const CLIP_PATHS = {
   activities: {
     feed: {
       success: [
-        '/videos/eat_accept_1.mp4.mp4',
-        '/videos/alexa_neutral_1.mp4.mp4'
+        '/videos/eat_accept_1.mp4',
+        '/videos/alexa_neutral_1.mp4'
       ],
       failure: [
-        '/videos/alexa_neutral_2.mp4.mp4'
+        '/videos/alexa_neutral_2.mp4'
       ]
     },
     talk: {
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4',
-        '/videos/alexa_neutral_3.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4',
+        '/videos/alexa_neutral_3.mp4'
       ],
       failure: [
-        '/videos/alexa_neutral_4.mp4.mp4'
+        '/videos/alexa_neutral_4.mp4'
       ]
     },
     play: {
       start: [
-        '/videos/play_start_1.mp4.mp4'
+        '/videos/play_start_1.mp4'
       ],
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4',
-        '/videos/alexa_neutral_2.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4',
+        '/videos/alexa_neutral_2.mp4'
       ],
       failure: [
-        '/videos/alexa_neutral_3.mp4.mp4'
+        '/videos/alexa_neutral_3.mp4'
       ]
     },
     wash: {
       start: [
-        '/videos/wash_start_1.mp4.mp4'
+        '/videos/wash_start_1.mp4'
       ],
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4'
       ]
     },
     sleep: {
       settling: [
-        '/videos/sleep_settling_1.mp4.mp4'
+        '/videos/sleep_settling_1.mp4'
       ],
       sleeping: [
-        '/videos/alexa_neutral_2.mp4.mp4',
-        '/videos/alexa_neutral_4.mp4.mp4'
+        '/videos/alexa_neutral_2.mp4',
+        '/videos/alexa_neutral_4.mp4'
       ],
       wake: [
-        '/videos/alexa_neutral_1.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4'
       ]
     },
     tidy: {
       before: [
-        '/videos/tidy_before_1.mp4.mp4'
+        '/videos/tidy_before_1.mp4'
       ],
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4'
       ],
       failure: [
-        '/videos/alexa_neutral_3.mp4.mp4'
+        '/videos/alexa_neutral_3.mp4'
       ]
     },
     comfort: {
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4',
-        '/videos/alexa_neutral_2.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4',
+        '/videos/alexa_neutral_2.mp4'
       ],
       failure: [
-        '/videos/alexa_neutral_4.mp4.mp4'
+        '/videos/alexa_neutral_4.mp4'
       ]
     },
     confide: {
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4',
-        '/videos/alexa_neutral_3.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4',
+        '/videos/alexa_neutral_3.mp4'
       ]
     },
     gift: {
       success: [
-        '/videos/alexa_neutral_1.mp4.mp4'
+        '/videos/alexa_neutral_1.mp4'
       ],
       failure: [
-        '/videos/alexa_neutral_2.mp4.mp4'
+        '/videos/alexa_neutral_2.mp4'
       ]
     }
   },
@@ -129,26 +129,26 @@ const CLIP_PATHS = {
   // Status-specific clips
   status: {
     sick: [
-      '/videos/sick_1.mp4.mp4',
-      '/videos/alexa_neutral_4.mp4.mp4'
+      '/videos/sick_1.mp4',
+      '/videos/alexa_neutral_4.mp4'
     ],
     leaving: [
-      '/videos/sick_1.mp4.mp4'
+      '/videos/sick_1.mp4'
     ]
   },
   
   // Rare/special clips
   rare: [
-    '/videos/alexa_neutral_1.mp4.mp4',
-    '/videos/alexa_neutral_2.mp4.mp4',
-    '/videos/alexa_neutral_3.mp4.mp4',
-    '/videos/alexa_neutral_4.mp4.mp4'
+    '/videos/alexa_neutral_1.mp4',
+    '/videos/alexa_neutral_2.mp4',
+    '/videos/alexa_neutral_3.mp4',
+    '/videos/alexa_neutral_4.mp4'
   ],
   
   // Milestone clips
   milestones: [
-    '/videos/alexa_neutral_1.mp4.mp4',
-    '/videos/alexa_neutral_2.mp4.mp4'
+    '/videos/alexa_neutral_1.mp4',
+    '/videos/alexa_neutral_2.mp4'
   ]
 };
 
