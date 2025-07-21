@@ -45,6 +45,11 @@ interface PearlStats {
   sessionCount: number;
   lastSessionDate: string;
   activityCounts: Record<string, number>;
+  
+  // New system features
+  currency: number;
+  lastLogin: number;
+  achievements: string[];
 }
 
 interface PearlStore extends PearlStats {
@@ -70,6 +75,13 @@ interface PearlStore extends PearlStats {
   canPerformActivity: (activity: string) => boolean;
   checkRareClipUnlock: () => string | null;
   logActivity: (activity: string) => void;
+  
+  // New system functions
+  onAppLoad: () => void;
+  checkStats: () => void;
+  schedulePushNotification: (title: string, body: string, delay: number) => void;
+  showModal: (title: string, body: string) => void;
+  requestPushPermission: () => void;
   
   // Admin
   reset: () => void;
@@ -117,6 +129,11 @@ export const usePearl = create<PearlStore>((set, get) => ({
   sessionCount: 0,
   lastSessionDate: '',
   activityCounts: {},
+  
+  // New system initial state
+  currency: 0,
+  lastLogin: Date.now(),
+  achievements: [],
 
   computeHappiness: () => {
     const state = get();
@@ -342,6 +359,16 @@ export const usePearl = create<PearlStore>((set, get) => ({
     const state = get();
     const now = Date.now();
     
+    // Check currency requirement
+    if (state.currency < 5) {
+      return {
+        success: false,
+        message: "Not enough gems! You need 5 💎 to feed Pearl.",
+        clipPath: '',
+        statChanges: {}
+      };
+    }
+    
     // Check if already full
     if (state.hunger >= 100) {
       return {
@@ -362,20 +389,16 @@ export const usePearl = create<PearlStore>((set, get) => ({
       };
     }
     
-    // Food type effects
-    const effects = {
-      healthy: { hunger: 20, affection: 6, comfort: 1 },
-      quick: { hunger: 15, affection: 4 },
-      junk: { hunger: 10, affection: 3, comfort: -1 }
-    };
+    // Updated effects per specification
+    const hungerGain = 40;
+    const affectionGain = 5;
     
-    const effect = effects[foodType];
     const newStats = {
-      hunger: clamp(state.hunger + effect.hunger),
-      affection: state.affection + effect.affection,
-      comfort: clamp(state.comfort + (effect.comfort || 0)),
+      hunger: clamp(state.hunger + hungerGain),
+      affection: state.affection + affectionGain,
+      currency: state.currency - 5,
       lastInteraction: now,
-      dailyAffectionGained: state.dailyAffectionGained + effect.affection
+      dailyAffectionGained: state.dailyAffectionGained + affectionGain
     };
     
     // Track engagement
@@ -395,6 +418,9 @@ export const usePearl = create<PearlStore>((set, get) => ({
     // Update bond progress after setting new stats
     get().updateBondProgress();
     
+    // Check stats after activity
+    get().checkStats();
+    
     // Check for rare clip unlock
     const rareClip = get().checkRareClipUnlock();
     if (rareClip) {
@@ -403,14 +429,14 @@ export const usePearl = create<PearlStore>((set, get) => ({
     
     // Dispatch notification event
     window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { hunger: effect.hunger, affection: effect.affection }, message: `She enjoyed the ${foodType} meal!` }
+      detail: { statChanges: { hunger: hungerGain, affection: affectionGain }, message: "She enjoyed the meal!" }
     }));
     
     return {
       success: true,
-      message: `She enjoyed the ${foodType} meal!`,
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'feed', outcome: foodType }),
-      statChanges: { hunger: effect.hunger, affection: effect.affection }
+      message: "She enjoyed the meal!",
+      clipPath: '/videos/eat_accept_1.mp4.mp4',
+      statChanges: { hunger: hungerGain, affection: affectionGain }
     };
   },
 
@@ -476,99 +502,58 @@ export const usePearl = create<PearlStore>((set, get) => ({
       };
     }
     
-    // Simple success/fail based on random + mood
-    const successChance = state.mood === 'happy' ? 0.8 : 0.6;
-    const success = Math.random() < successChance;
+    // Updated effects per specification
+    const happinessGain = 30;
+    const affectionGain = 3;
     
-    // Different messages based on play type
-    const messages = {
-      game: {
-        success: "She had fun playing the game with you!",
-        failure: "She tried her best at the game, but wasn't quite feeling it."
-      },
-      friend: {
-        success: "She enjoyed playing together as friends!",
-        failure: "She appreciated the friendly play time, even if she wasn't fully into it."
-      }
+    const newStats = {
+      happiness: clamp(state.happiness + happinessGain),
+      affection: state.affection + affectionGain,
+      lastInteraction: now,
+      dailyAffectionGained: state.dailyAffectionGained + affectionGain
     };
     
-    // Get the specific video for the play type
-    const playTypeClip = resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'play', outcome: playType });
-    
-    if (success) {
-      const newStats = {
-        affection: state.affection + 10,
-        energy: clamp(state.energy - 8),
-        happiness: clamp(state.happiness + 5), // temp boost
-        lastInteraction: now,
-        dailyAffectionGained: state.dailyAffectionGained + 10
-      };
-      
-      if (!state.todayActivities.includes('play')) {
-        newStats.engagement = state.engagement + 1;
-        newStats.todayActivities = [...state.todayActivities, 'play'];
-      }
-      
-      set(newStats);
-      
-      // Dispatch notification event
-      window.dispatchEvent(new CustomEvent('activityResult', {
-        detail: { statChanges: { affection: 10, energy: -8 }, message: messages[playType].success }
-      }));
-      
-      return {
-        success: true,
-        message: messages[playType].success,
-        clipPath: playTypeClip,
-        statChanges: { affection: 10, energy: -8 }
-      };
-    } else {
-      set({
-        affection: state.affection + 4,
-        energy: clamp(state.energy - 5),
-        lastInteraction: now
-      });
-      
-      // Dispatch notification event
-      window.dispatchEvent(new CustomEvent('activityResult', {
-        detail: { statChanges: { affection: 4, energy: -5 }, message: messages[playType].failure }
-      }));
-      
-      return {
-        success: false,
-        message: messages[playType].failure,
-        clipPath: playTypeClip,
-        statChanges: { affection: 4, energy: -5 }
-      };
+    if (!state.todayActivities.includes('play')) {
+      newStats.engagement = state.engagement + 1;
+      newStats.todayActivities = [...state.todayActivities, 'play'];
     }
+    
+    set(newStats);
+    get().logActivity('play');
+    
+    // Check stats after activity
+    get().checkStats();
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { happiness: happinessGain, affection: affectionGain }, message: "She had fun playing!" }
+    }));
+    
+    // Open bubble pop mini-game
+    window.dispatchEvent(new CustomEvent('openMiniGame', {
+      detail: { game: 'bubble_pop' }
+    }));
+    
+    return {
+      success: true,
+      message: "She had fun playing!",
+      clipPath: '/videos/play_start_1.mp4.mp4',
+      statChanges: { happiness: happinessGain, affection: affectionGain }
+    };
   },
 
   wash: () => {
     const state = get();
     const now = Date.now();
     
-    if (state.hygiene > 75) {
-      set({
-        hygiene: clamp(state.hygiene + 10),
-        comfort: clamp(state.comfort + 2),
-        lastInteraction: now
-      });
-      
-      return {
-        success: true,
-        message: "She's already quite clean, but appreciated the gesture.",
-        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'wash', outcome: 'success' }),
-        statChanges: { hygiene: 10, comfort: 2 }
-      };
-    }
+    // Updated effects per specification
+    const affectionGain = 2;
     
     const newStats = {
-      hygiene: clamp(state.hygiene + 30),
-      comfort: clamp(state.comfort + 4),
-      energy: clamp(state.energy - 5),
-      affection: state.affection + 6,
+      hygiene: 100, // Set to 100 as per specification
+      affection: state.affection + affectionGain,
       lastInteraction: now,
-      dailyAffectionGained: state.dailyAffectionGained + 6
+      dailyAffectionGained: state.dailyAffectionGained + affectionGain
     };
     
     if (!state.todayActivities.includes('wash')) {
@@ -577,16 +562,25 @@ export const usePearl = create<PearlStore>((set, get) => ({
     }
     
     set(newStats);
+    get().logActivity('wash');
     
     const happiness = get().computeHappiness();
     const mood = get().computeMood();
     set({ happiness, mood });
     
+    // Check stats after activity
+    get().checkStats();
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { hygiene: 100 - state.hygiene, affection: affectionGain }, message: "She feels much cleaner now!" }
+    }));
+    
     return {
       success: true,
-      message: "She feels much more refreshed now!",
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'wash', outcome: 'success' }),
-      statChanges: { hygiene: 30, comfort: 4, energy: -5 }
+      message: "She feels much cleaner now!",
+      clipPath: '/videos/wash_start_1.mp4.mp4',
+      statChanges: { hygiene: 100 - state.hygiene, affection: affectionGain }
     };
   },
 
@@ -858,5 +852,85 @@ export const usePearl = create<PearlStore>((set, get) => ({
     rareCooldownTimestamp: 0,
     engagement: 0,
     todayActivities: []
-  })
+  }),
+
+  onAppLoad: () => {
+    const state = get();
+    const now = Date.now();
+    const daysDiff = Math.floor((now - state.lastLogin) / (1000 * 60 * 60 * 24));
+    
+    if (daysDiff >= 1) {
+      let newStreak;
+      if (daysDiff === 1) {
+        newStreak = state.streakDays + 1;
+      } else {
+        newStreak = 1;
+      }
+      
+      const reward = 10 * Math.min(newStreak, 7);
+      
+      set({
+        streakDays: newStreak,
+        lastLogin: now,
+        currency: state.currency + reward
+      });
+      
+      get().showModal(
+        "Daily reward",
+        `💎 +${reward}  |  Day ${newStreak} streak`
+      );
+    }
+    
+    get().checkStats();
+  },
+
+  checkStats: () => {
+    const state = get();
+    
+    // Schedule push notification if stats are low
+    if (state.hunger < 30 || state.hygiene < 30 || state.energy < 30) {
+      get().schedulePushNotification(
+        "Pearl misses you",
+        "Come back and look after her ❤️",
+        2 * 60 * 60 * 1000 // 2 hours
+      );
+    }
+    
+    // Check for achievements
+    if (state.affection >= 100 && !state.achievements.includes("First Kiss")) {
+      const newAchievements = [...state.achievements, "First Kiss"];
+      set({ achievements: newAchievements });
+      
+      get().showModal(
+        "New achievement",
+        "💖 First Kiss unlocked"
+      );
+    }
+  },
+
+  schedulePushNotification: (title: string, body: string, delay: number) => {
+    // Check if push notifications are supported
+    if ('Notification' in window && 'serviceWorker' in navigator) {
+      setTimeout(() => {
+        if (Notification.permission === 'granted') {
+          new Notification(title, { body });
+        }
+      }, delay);
+    }
+  },
+
+  showModal: (title: string, body: string) => {
+    // Dispatch custom event for modal display
+    window.dispatchEvent(new CustomEvent('showModal', {
+      detail: { title, body }
+    }));
+  },
+
+  requestPushPermission: () => {
+    if ('Notification' in window) {
+      Notification.requestPermission().then(permission => {
+        console.log('Push notification permission:', permission);
+      });
+    }
+  }
 }));
