@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { resolveClip } from '../utils/clipResolver';
 
 interface PearlStats {
   // Primary visible meters
@@ -206,10 +207,10 @@ export const usePearl = create<PearlStore>((set, get) => ({
         Math.random() < 0.15) { // 15% chance
       
       const rareClips = [
-        '/clips/rare/spontaneous_laugh.mp4',
-        '/clips/rare/thoughtful_moment.mp4',
-        '/clips/rare/gentle_smile.mp4',
-        '/clips/rare/content_sigh.mp4'
+        '/videos/alexa_neutral_1.mp4.mp4',
+        '/videos/alexa_neutral_2.mp4.mp4',
+        '/videos/alexa_neutral_3.mp4.mp4',
+        '/videos/alexa_neutral_4.mp4.mp4'
       ];
       
       const availableClips = rareClips.filter(clip => !state.unlockedClips.includes(clip));
@@ -303,7 +304,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's not hungry right now.",
-        clipPath: '/clips/eat_refuse.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'feed', outcome: 'failure' }),
         statChanges: {}
       };
     }
@@ -347,7 +348,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: `She enjoyed the ${foodType} meal!`,
-      clipPath: '/clips/eat_accept.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'feed', outcome: 'success' }),
       statChanges: { hunger: effect.hunger, affection: effect.affection }
     };
   },
@@ -362,7 +363,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She doesn't seem in the mood for light conversation.",
-        clipPath: '/clips/talk_flat.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'talk', outcome: 'failure' }),
         statChanges: { trust: -1 }
       };
     }
@@ -396,7 +397,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: `She appreciated your ${topic} conversation.`,
-      clipPath: '/clips/talk_attentive.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'talk', outcome: 'success' }),
       statChanges: { affection: effect.affection, comfort: effect.comfort }
     };
   },
@@ -409,7 +410,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's too tired to play right now.",
-        clipPath: '/clips/play_tired_decline.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'play', outcome: 'failure' }),
         statChanges: {}
       };
     }
@@ -437,7 +438,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: true,
         message: "She had fun playing with you!",
-        clipPath: '/clips/play_success.mp4',
+        clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'play', outcome: 'success' }),
         statChanges: { affection: 10, energy: -8 }
       };
     } else {
@@ -450,7 +451,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She tried her best, but wasn't quite feeling it.",
-        clipPath: '/clips/play_start.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'play', outcome: 'failure' }),
         statChanges: { affection: 4, energy: -5 }
       };
     }
@@ -470,7 +471,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: true,
         message: "She's already quite clean, but appreciated the gesture.",
-        clipPath: '/clips/wash_refreshed.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'wash', outcome: 'success' }),
         statChanges: { hygiene: 10, comfort: 2 }
       };
     }
@@ -498,7 +499,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She feels much more refreshed now!",
-      clipPath: '/clips/wash_refreshed.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'wash', outcome: 'success' }),
       statChanges: { hygiene: 30, comfort: 4, energy: -5 }
     };
   },
@@ -511,7 +512,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's not tired enough for sleep right now.",
-        clipPath: '/clips/idle_neutral.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags }),
         statChanges: {}
       };
     }
@@ -520,7 +521,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's too hungry to sleep comfortably.",
-        clipPath: '/clips/idle_low.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags }),
         statChanges: {}
       };
     }
@@ -549,7 +550,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She's settling in for a good rest.",
-      clipPath: '/clips/sleep_settling.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'sleep', outcome: 'success' }),
       statChanges: { energy: 40, trust: 3, hunger: -10 }
     };
   },
@@ -562,7 +563,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's too tired to tidy up right now.",
-        clipPath: '/clips/tidy_tired.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'tidy', outcome: 'failure' }),
         statChanges: {}
       };
     }
@@ -591,7 +592,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She feels better with a tidy space!",
-      clipPath: '/clips/tidy_satisfied.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'tidy', outcome: 'success' }),
       statChanges: { trust: 2, affection: 6, energy: -8 }
     };
   },
@@ -604,7 +605,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She seems okay right now.",
-        clipPath: '/clips/comfort_unnecessary.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'comfort', outcome: 'failure' }),
         statChanges: {}
       };
     }
@@ -633,7 +634,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: true,
         message: "Your comfort helped her feel better.",
-        clipPath: '/clips/comfort_receive.mp4',
+        clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'comfort', outcome: 'success' }),
         statChanges: { trust: 4, comfort: 6, affection: 5 }
       };
     } else {
@@ -645,7 +646,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She needed a different kind of support.",
-        clipPath: '/clips/comfort_recoil.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'comfort', outcome: 'failure' }),
         statChanges: { comfort: -3 }
       };
     }
@@ -659,7 +660,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's not ready to share personal things yet.",
-        clipPath: '/clips/confide_not_ready.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'confide', outcome: 'failure' }),
         statChanges: {}
       };
     }
@@ -694,7 +695,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: story.message,
-      clipPath: '/clips/confide_serious.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'confide', outcome: 'success' }),
       statChanges: { trust: story.trust, comfort: story.comfort, affection: 8 }
     };
   },
@@ -707,7 +708,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's still appreciating your last gift.",
-        clipPath: '/clips/gift_too_soon.mp4',
+        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'gift', outcome: 'failure' }),
         statChanges: {}
       };
     }
@@ -742,7 +743,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: gift.message,
-      clipPath: '/clips/gift_accept.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'gift', outcome: 'success' }),
       statChanges: { affection: finalAffection, comfort: gift.comfort }
     };
   },
