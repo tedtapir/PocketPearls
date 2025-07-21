@@ -335,10 +335,12 @@ export const usePearl = create<PearlStore>((set, get) => ({
     set(newStats);
     get().logActivity('feed');
     
-    // Update derived stats and bond progress
+    // Update derived stats
     const happiness = get().computeHappiness();
     const mood = get().computeMood();
     set({ happiness, mood });
+    
+    // Update bond progress after setting new stats
     get().updateBondProgress();
     
     // Check for rare clip unlock
