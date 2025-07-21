@@ -565,7 +565,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She's settling in for a good rest.",
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'sleep', outcome: 'success' }),
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'sleep', outcome: 'settling' }),
       statChanges: { energy: 40, trust: 3, hunger: -10 }
     };
   },

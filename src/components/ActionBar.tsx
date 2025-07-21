@@ -4,7 +4,7 @@ import { ActivityModal } from './ActivityModal';
 import { VideoPlayer } from './VideoPlayer';
 
 export const ActionBar: React.FC = () => {
-  const { feed, talk, play, wash, tidy, canPerformActivity } = usePearl();
+  const { feed, talk, play, wash, tidy, sleepAssist, canPerformActivity } = usePearl();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<any>(null);
   const [activityClip, setActivityClip] = useState<string | null>(null);
@@ -27,6 +27,9 @@ export const ActionBar: React.FC = () => {
         break;
       case 'tidy':
         result = tidy();
+        break;
+      case 'sleep':
+        result = sleepAssist();
         break;
       default:
         return;
@@ -63,7 +66,7 @@ export const ActionBar: React.FC = () => {
       
       {/* Bottom Action Bar */}
       <div className="bg-black/80 backdrop-blur-md border-t border-white/20 p-3 sm:p-4 safe-area-inset-bottom">
-        <div className="flex justify-around items-center max-w-2xl mx-auto px-2">
+        <div className="flex justify-around items-center max-w-3xl mx-auto px-2">
           {/* Feed Button */}
           <button
             onClick={() => setActiveModal('feed')}
@@ -137,6 +140,18 @@ export const ActionBar: React.FC = () => {
             </div>
             <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-[#A0E7E5]">
               Tidy
+            </span>
+          </button>
+          {/* Sleep Button */}
+          <button
+            onClick={() => setActiveModal('sleep')}
+            className="group flex flex-col items-center p-2 sm:p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 min-w-[60px] sm:min-w-[80px]"
+          >
+            <div className="text-2xl sm:text-3xl mb-1 group-hover:drop-shadow-[0_0_12px_rgba(147,51,234,0.8)]">
+              😴
+            </div>
+            <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-[#9333EA]">
+              Sleep
             </span>
           </button>
         </div>
