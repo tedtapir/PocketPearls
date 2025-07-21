@@ -73,7 +73,7 @@ const CLIP_PATHS = {
     },
     wash: {
       success: [
-        '/videos/wash_start_1.mp4'
+        '/videos/wash_start_1.mp4.mp4'
       ]
     },
     sleep: {
