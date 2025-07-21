@@ -37,6 +37,15 @@ const CLIP_PATHS = {
       ],
       failure: [
         '/videos/alexa_neutral_2.mp4'
+      ],
+      healthy: [
+        '/videos/healthy_meal_1.mp4'
+      ],
+      quick: [
+        '/videos/quick_snack_1.mp4'
+      ],
+      junk: [
+        '/videos/comfort_food_1.mp4'
       ]
     },
     talk: {

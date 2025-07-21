@@ -348,7 +348,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: `She enjoyed the ${foodType} meal!`,
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'feed', outcome: 'success' }),
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'feed', outcome: foodType }),
       statChanges: { hunger: effect.hunger, affection: effect.affection }
     };
   },
