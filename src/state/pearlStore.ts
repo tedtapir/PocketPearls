@@ -502,12 +502,12 @@ export const usePearl = create<PearlStore>((set, get) => ({
       };
     }
     
-    // Updated effects per specification
-    const happinessGain = 30;
-    const affectionGain = 3;
+    // Original play effects
+    const energyCost = 10;
+    const affectionGain = 15;
     
     const newStats = {
-      happiness: clamp(state.happiness + happinessGain),
+      energy: clamp(state.energy - energyCost),
       affection: state.affection + affectionGain,
       lastInteraction: now,
       dailyAffectionGained: state.dailyAffectionGained + affectionGain
@@ -521,24 +521,23 @@ export const usePearl = create<PearlStore>((set, get) => ({
     set(newStats);
     get().logActivity('play');
     
+    const happiness = get().computeHappiness();
+    const mood = get().computeMood();
+    set({ happiness, mood });
+    
     // Check stats after activity
     get().checkStats();
     
     // Dispatch notification event
     window.dispatchEvent(new CustomEvent('activityResult', {
-      detail: { statChanges: { happiness: happinessGain, affection: affectionGain }, message: "She had fun playing!" }
-    }));
-    
-    // Open bubble pop mini-game
-    window.dispatchEvent(new CustomEvent('openMiniGame', {
-      detail: { game: 'bubble_pop' }
+      detail: { statChanges: { energy: -energyCost, affection: affectionGain }, message: "She had fun playing!" }
     }));
     
     return {
       success: true,
       message: "She had fun playing!",
       clipPath: '/videos/play_start_1.mp4.mp4',
-      statChanges: { happiness: happinessGain, affection: affectionGain }
+      statChanges: { energy: -energyCost, affection: affectionGain }
     };
   },
 
@@ -831,6 +830,23 @@ export const usePearl = create<PearlStore>((set, get) => ({
       message: gift.message,
       clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'gift', outcome: 'success' }),
       statChanges: { affection: finalAffection, comfort: gift.comfort }
+    };
+  },
+
+  // New gems mini-game function
+  playGemsGame: () => {
+    const state = get();
+    
+    // Open bubble pop mini-game
+    window.dispatchEvent(new CustomEvent('openMiniGame', {
+      detail: { game: 'bubble_pop' }
+    }));
+    
+    return {
+      success: true,
+      message: "Time to earn some gems!",
+      clipPath: '',
+      statChanges: {}
     };
   },
 
