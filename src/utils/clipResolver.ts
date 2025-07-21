@@ -32,20 +32,20 @@ const CLIP_PATHS = {
   activities: {
     feed: {
       success: [
-        '/videos/eat_accept_1.mp4.mp4',
+        '/videos/eat_accept_1.mp4',
         '/videos/alexa_neutral_1.mp4'
       ],
       failure: [
         '/videos/alexa_neutral_2.mp4'
       ],
       healthy: [
-        '/videos/healthy_meal_1.mp4.mp4'
+        '/videos/healthy_meal_1.mp4'
       ],
       quick: [
-        '/videos/quick_snack_1.mp4.mp4'
+        '/videos/quick_snack_1.mp4'
       ],
       junk: [
-        '/videos/comfort_food_1.mp4.mp4'
+        '/videos/comfort_food_1.mp4'
       ]
     },
     talk: {
@@ -59,10 +59,10 @@ const CLIP_PATHS = {
     },
     play: {
       game: [
-        '/videos/play_start_1.mp4.mp4'
+        '/videos/play_start_1.mp4'
       ],
       friend: [
-        '/videos/play_with_friend_1.mp4.mp4'
+        '/videos/play_with_friend_1.mp4'
       ],
       success: [
         '/videos/alexa_neutral_1.mp4',
@@ -74,12 +74,12 @@ const CLIP_PATHS = {
     },
     wash: {
       success: [
-        '/videos/wash_start_1.mp4.mp4'
+        '/videos/wash_start_1.mp4'
       ]
     },
     sleep: {
       settling: [
-        '/videos/sleep_settling_1.mp4.mp4'
+        '/videos/sleep_settling_1.mp4'
       ],
       sleeping: [
         '/videos/alexa_neutral_2.mp4',
@@ -91,7 +91,7 @@ const CLIP_PATHS = {
     },
     tidy: {
       before: [
-        '/videos/tidy_before_1.mp4.mp4'
+        '/videos/tidy_before_1.mp4'
       ],
       success: [
         '/videos/alexa_neutral_1.mp4'
@@ -128,11 +128,11 @@ const CLIP_PATHS = {
   // Status-specific clips
   status: {
     sick: [
-      '/videos/sick_1.mp4.mp4',
+      '/videos/sick_1.mp4',
       '/videos/alexa_neutral_4.mp4'
     ],
     leaving: [
-      '/videos/sick_1.mp4.mp4'
+      '/videos/sick_1.mp4'
     ]
   },
   
