@@ -59,8 +59,11 @@ const CLIP_PATHS = {
       ]
     },
     play: {
-      start: [
-        '/videos/play_start_1.mp4.mp4'
+      game: [
+        '/videos/play_start_1.mp4'
+      ],
+      friend: [
+        '/videos/play_with_friend_1.mp4'
       ],
       success: [
         '/videos/alexa_neutral_1.mp4',
@@ -197,6 +200,14 @@ export function resolveClipSequence({ mood, statusFlags, activity, outcome, bond
     const activityClips = CLIP_PATHS.activities[activity as keyof typeof CLIP_PATHS.activities];
     if (activityClips && activityClips[outcome as keyof typeof activityClips]) {
       return activityClips[outcome as keyof typeof activityClips];
+    }
+  }
+  
+  // Special handling for play activity with playType
+  if (activity === 'play' && outcome) {
+    const playClips = CLIP_PATHS.activities.play;
+    if (playClips && playClips[outcome as keyof typeof playClips]) {
+      return playClips[outcome as keyof typeof playClips];
     }
   }
   

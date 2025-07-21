@@ -431,6 +431,9 @@ export const usePearl = create<PearlStore>((set, get) => ({
       }
     };
     
+    // Get the specific video for the play type
+    const playTypeClip = resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'play', outcome: playType });
+    
     if (success) {
       const newStats = {
         affection: state.affection + 10,
@@ -450,7 +453,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: true,
         message: messages[playType].success,
-        clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'play', outcome: 'success' }),
+        clipPath: playTypeClip,
         statChanges: { affection: 10, energy: -8 }
       };
     } else {
@@ -463,7 +466,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: messages[playType].failure,
-        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'play', outcome: 'failure' }),
+        clipPath: playTypeClip,
         statChanges: { affection: 4, energy: -5 }
       };
     }
