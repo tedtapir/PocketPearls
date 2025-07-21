@@ -294,6 +294,41 @@ export const usePearl = create<PearlStore>((set, get) => ({
     // Check status changes
     get().checkStatusFlags();
   },
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { affection: finalAffection, comfort: gift.comfort }, message: gift.message }
+    }));
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { trust: story.trust, comfort: story.comfort, affection: 8 }, message: story.message }
+    }));
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { hygiene: 20, energy: 15, affection: 8, trust: 5 }, message: "She's feeling much better now!" }
+    }));
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { trust: 2, affection: 6, energy: -8 }, message: "She feels better with a tidy space!" }
+    }));
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { energy: 40, trust: 3, hunger: -10 }, message: "She's settling in for a good rest." }
+    }));
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { hygiene: 30, comfort: 4, energy: -5 }, message: "She feels much more refreshed now!" }
+    }));
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { affection: effect.affection, comfort: effect.comfort }, message: `She appreciated your ${topic} conversation.` }
+    }));
+    
 
   feed: (foodType = 'healthy') => {
     const state = get();
@@ -344,6 +379,11 @@ export const usePearl = create<PearlStore>((set, get) => ({
     if (rareClip) {
       // Could trigger notification or modal here
     }
+    
+    // Dispatch notification event
+    window.dispatchEvent(new CustomEvent('activityResult', {
+      detail: { statChanges: { hunger: effect.hunger, affection: effect.affection }, message: `She enjoyed the ${foodType} meal!` }
+    }));
     
     return {
       success: true,
@@ -450,6 +490,11 @@ export const usePearl = create<PearlStore>((set, get) => ({
       
       set(newStats);
       
+      // Dispatch notification event
+      window.dispatchEvent(new CustomEvent('activityResult', {
+        detail: { statChanges: { affection: 10, energy: -8 }, message: messages[playType].success }
+      }));
+      
       return {
         success: true,
         message: messages[playType].success,
@@ -462,6 +507,11 @@ export const usePearl = create<PearlStore>((set, get) => ({
         energy: clamp(state.energy - 5),
         lastInteraction: now
       });
+      
+      // Dispatch notification event
+      window.dispatchEvent(new CustomEvent('activityResult', {
+        detail: { statChanges: { affection: 4, energy: -5 }, message: messages[playType].failure }
+      }));
       
       return {
         success: false,
@@ -646,6 +696,11 @@ export const usePearl = create<PearlStore>((set, get) => ({
       
       set(newStats);
       get().logActivity('comfort');
+      
+      // Dispatch notification event
+      window.dispatchEvent(new CustomEvent('activityResult', {
+        detail: { statChanges: { trust: 4, comfort: 6, affection: 5 }, message: "Your comfort helped her feel better." }
+      }));
       
       return {
         success: true,

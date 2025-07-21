@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
 interface ActivityModalProps {
-  activity: 'feed' | 'talk' | 'play' | 'wash' | 'sleep' | 'tidy' | 'comfort' | 'confide' | 'gift' | null;
+  activity: 'feed' | 'talk' | 'play' | 'wash' | 'sleep' | 'tidy' | 'comfort' | 'confide' | 'gift' | 'medicine' | null;
   onClose: () => void;
   onConfirm: (options?: any) => void;
 }

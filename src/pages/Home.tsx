@@ -1,21 +1,48 @@
 import React from 'react';
+import { useState } from 'react';
 import { PearlAvatar } from '../components/PearlAvatar';
 import { StatsPanel } from '../components/StatsPanel';
 import { ActionBar } from '../components/ActionBar';
 import { NotificationSystem } from '../components/NotificationSystem';
 import { AnalyticsDashboard } from '../components/AnalyticsDashboard';
+import { StatChangeNotification } from '../components/StatChangeNotification';
 import { usePearlTicker } from '../hooks/usePearlTicker';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
 
 export const Home: React.FC = () => {
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [notification, setNotification] = useState<{
+    changes: Record<string, number>;
+    message: string;
+  } | null>(null);
   
   usePearlTicker();
+  
+  // Listen for activity results to show notifications
+  React.useEffect(() => {
+    const handleActivityResult = (event: CustomEvent) => {
+      const { statChanges, message } = event.detail;
+      if (Object.keys(statChanges).length > 0) {
+        setNotification({ changes: statChanges, message });
+      }
+    };
+    
+    window.addEventListener('activityResult', handleActivityResult as EventListener);
+    return () => window.removeEventListener('activityResult', handleActivityResult as EventListener);
+  }, []);
   
   return (
     <div className="min-h-screen w-full relative overflow-hidden bg-black">
       <NotificationSystem />
+      
+      {/* Stat Change Notification */}
+      {notification && (
+        <StatChangeNotification
+          changes={notification.changes}
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
+      )}
       
       {/* Full Screen Video Background - Responsive */}
       <div className="fixed inset-0 w-full h-full">
