@@ -138,19 +138,21 @@ export const PearlChat: React.FC<PearlChatProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       {/* Background Video */}
-      <video
-        src="/videos/pearl_chat_1.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+      <div className="absolute inset-0 w-full h-full">
+        <video
+          src="/videos/pearl_chat_1.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover object-center"
+        />
+      </div>
       
       {/* Chat Interface Overlay */}
-      <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-3xl w-full max-w-md h-[600px] flex flex-col border-2 border-[#33FFCA]/30 m-4"
+      <div className="relative z-10 bg-black/60 backdrop-blur-sm rounded-3xl w-full max-w-md h-[600px] flex flex-col border-2 border-[#33FFCA]/30"
            style={{ boxShadow: '0 0 40px rgba(51, 255, 202, 0.3)' }}>
         
         {/* Header */}
