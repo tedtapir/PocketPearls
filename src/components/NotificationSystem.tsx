@@ -13,6 +13,25 @@ export const NotificationSystem: React.FC = () => {
   const { hunger, energy, hygiene, statusFlags, lastInteraction } = usePearl();
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  // Listen for Pearl notifications
+  useEffect(() => {
+    const handlePearlNotification = (event: CustomEvent) => {
+      const { message, type } = event.detail;
+      const newNotification: Notification = {
+        id: `pearl-${Date.now()}`,
+        title: type === 'danger' ? 'Critical Warning!' : 'Warning!',
+        message,
+        type: type === 'danger' ? 'warning' : 'warning',
+        timestamp: Date.now()
+      };
+      
+      setNotifications(prev => [...prev, newNotification]);
+    };
+
+    window.addEventListener('pearlNotification', handlePearlNotification as EventListener);
+    return () => window.removeEventListener('pearlNotification', handlePearlNotification as EventListener);
+  }, []);
+
   useEffect(() => {
     const checkNotifications = () => {
       const now = Date.now();

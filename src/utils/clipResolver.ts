@@ -129,6 +129,12 @@ const CLIP_PATHS = {
     sick: [
       '/videos/pearl_sick_idle_1.mp4'
     ],
+    angry: [
+      '/videos/Pearl_Angry_1.mp4'
+    ],
+    neglected: [
+      '/videos/pearl_neglected_1.mp4'
+    ],
     sad: [
       '/videos/pearl_sad_1.mp4'
     ],
@@ -154,6 +160,14 @@ const CLIP_PATHS = {
 
 export function resolveClip({ mood, statusFlags, activity, outcome, bondLevel }: ClipResolverParams): string {
   // Priority 1: Status flags override everything
+  if (statusFlags.includes('neglected')) {
+    return getRandomClip(CLIP_PATHS.status.neglected) as string;
+  }
+  
+  if (statusFlags.includes('angry')) {
+    return getRandomClip(CLIP_PATHS.status.angry) as string;
+  }
+  
   if (statusFlags.includes('sick')) {
     return getRandomClip(CLIP_PATHS.status.sick) as string;
   }
@@ -191,6 +205,14 @@ export function resolveClip({ mood, statusFlags, activity, outcome, bondLevel }:
 // New function to get all clips for seamless playback
 export function resolveClipSequence({ mood, statusFlags, activity, outcome, bondLevel }: ClipResolverParams): string[] {
   // Priority 1: Status flags override everything
+  if (statusFlags.includes('neglected')) {
+    return CLIP_PATHS.status.neglected;
+  }
+  
+  if (statusFlags.includes('angry')) {
+    return CLIP_PATHS.status.angry;
+  }
+  
   if (statusFlags.includes('sick')) {
     return CLIP_PATHS.status.sick;
   }

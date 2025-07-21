@@ -175,18 +175,52 @@ export const usePearl = create<PearlStore>((set, get) => ({
   checkStatusFlags: () => {
     const state = get();
     const now = Date.now();
-    const hoursSinceInteraction = (now - state.lastInteraction) / (1000 * 60 * 60);
+    const minutesSinceInteraction = (now - state.lastInteraction) / (1000 * 60);
     let newFlags = [...state.statusFlags];
 
+    // Check for angry state (moderately low stats)
+    const isAngry = (state.hunger < 40 || state.energy < 30 || state.hygiene < 35) && 
+                   minutesSinceInteraction > 30; // 30 minutes without interaction
+    
+    if (isAngry && !newFlags.includes('angry')) {
+      newFlags.push('angry');
+      // Dispatch notification
+      window.dispatchEvent(new CustomEvent('pearlNotification', {
+        detail: { 
+          message: 'Pearl is unhappy and needs attention!',
+          type: 'warning'
+        }
+      }));
+    } else if (!isAngry) {
+      newFlags = newFlags.filter(f => f !== 'angry');
+    }
+
+    // Check for neglected state (dangerously low stats)
+    const isNeglected = (state.hunger < 20 || state.energy < 15 || state.hygiene < 20) && 
+                       minutesSinceInteraction > 60; // 1 hour without interaction
+    
+    if (isNeglected && !newFlags.includes('neglected')) {
+      newFlags.push('neglected');
+      // Dispatch notification
+      window.dispatchEvent(new CustomEvent('pearlNotification', {
+        detail: { 
+          message: 'Your Pearl is too unhappy and will leave soon!',
+          type: 'danger'
+        }
+      }));
+    } else if (!isNeglected) {
+      newFlags = newFlags.filter(f => f !== 'neglected');
+    }
+
     // Sick: 2 days hygiene <40 OR random low hygiene roll
-    if (state.hygiene < 40 && hoursSinceInteraction > 48) {
+    if (state.hygiene < 40 && minutesSinceInteraction > (48 * 60)) {
       if (!newFlags.includes('sick')) newFlags.push('sick');
     } else {
       newFlags = newFlags.filter(f => f !== 'sick');
     }
 
     // Withdrawn: 24h with <2 activities
-    if (hoursSinceInteraction > 24 && state.engagement < 2) {
+    if (minutesSinceInteraction > (24 * 60) && state.engagement < 2) {
       if (!newFlags.includes('withdrawn')) newFlags.push('withdrawn');
     } else {
       newFlags = newFlags.filter(f => f !== 'withdrawn');
@@ -198,7 +232,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     }
 
     // Leaving warning: 48h severe neglect
-    if (hoursSinceInteraction > 48 && state.hunger < 30 && state.energy < 30 && state.hygiene < 30) {
+    if (minutesSinceInteraction > (48 * 60) && state.hunger < 30 && state.energy < 30 && state.hygiene < 30) {
       if (!newFlags.includes('leavingWarning')) newFlags.push('leavingWarning');
     }
 
@@ -263,19 +297,20 @@ export const usePearl = create<PearlStore>((set, get) => ({
   tick: () => {
     const now = Date.now();
     const state = get();
-    const elapsedHours = (now - state.lastUpdated) / (1000 * 60 * 60);
+    const elapsedMinutes = (now - state.lastUpdated) / (1000 * 60);
     
-    if (elapsedHours < 0.25) return; // Wait 15 minutes minimum
+    if (elapsedMinutes < 1) return; // Wait 1 minute minimum
     
-    // Apply decay
-    let newHunger = clamp(state.hunger - (2 * elapsedHours));
-    let newEnergy = clamp(state.energy - (1 * elapsedHours));
-    let newHygiene = clamp(state.hygiene - (1.5 * elapsedHours / 2)); // every 2 hours
+    // Apply decay - faster decay for more responsive gameplay
+    const decayRate = elapsedMinutes / 60; // Convert to hourly rate
+    let newHunger = clamp(state.hunger - (3 * decayRate)); // 3 points per hour
+    let newEnergy = clamp(state.energy - (2 * decayRate)); // 2 points per hour
+    let newHygiene = clamp(state.hygiene - (1.5 * decayRate)); // 1.5 points per hour
     
     // Extra decay if sick
     if (state.statusFlags.includes('sick')) {
-      newHunger = clamp(newHunger - (1 * elapsedHours)); // +50% decay
-      newEnergy = clamp(newEnergy - (0.5 * elapsedHours)); // +50% decay
+      newHunger = clamp(newHunger - (1.5 * decayRate)); // +50% decay
+      newEnergy = clamp(newEnergy - (1 * decayRate)); // +50% decay
     }
     
     // Reset daily tracking if new day
