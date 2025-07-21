@@ -5,24 +5,9 @@ interface Bubble {
   id: number;
   x: number;
   y: number;
-  targetX: number;
-  targetY: number;
   size: number;
   color: string;
-  startTime: number;
-  duration: number;
-  popping: boolean;
-  popFrame: number;
-}
-
-interface Particle {
-  id: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
+  popped: boolean;
 }
 
 interface BubblePopGameProps {
@@ -31,39 +16,28 @@ interface BubblePopGameProps {
 }
 
 export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose }) => {
-  const { currency } = usePearl();
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
-  const [particles, setParticles] = useState<Particle[]>([]);
   const [timeLeft, setTimeLeft] = useState(30);
   const [score, setScore] = useState(0);
   const [gameActive, setGameActive] = useState(false);
-  const gameRef = useRef<HTMLDivElement>(null);
-  const bubbleSpawnerRef = useRef<NodeJS.Timeout>();
-  const animationFrameRef = useRef<number>();
+  const [gameOver, setGameOver] = useState(false);
+  const gameAreaRef = useRef<HTMLDivElement>(null);
 
-  // Audio context for pop sounds
-  const audioContextRef = useRef<AudioContext>();
-  const popSoundRef = useRef<AudioBuffer>();
-
+  // Start game when opened
   useEffect(() => {
-    if (!isOpen) return;
+    if (isOpen && !gameActive) {
+      startGame();
+    }
+  }, [isOpen]);
 
-    // Initialize game
+  const startGame = () => {
     setTimeLeft(30);
     setScore(0);
     setBubbles([]);
-    setParticles([]);
     setGameActive(true);
+    setGameOver(false);
 
-    // Initialize audio
-    initializeAudio();
-
-    // Start bubble spawning
-    bubbleSpawnerRef.current = setInterval(() => {
-      spawnBubble();
-    }, 750); // Every 0.75 seconds
-
-    // Start countdown timer
+    // Start countdown
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -75,219 +49,67 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
       });
     }, 1000);
 
-    // Start animation loop
-    startAnimationLoop();
-
-    return () => {
-      if (bubbleSpawnerRef.current) clearInterval(bubbleSpawnerRef.current);
-      clearInterval(timer);
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      setGameActive(false);
-    };
-  }, [isOpen]);
-
-  const initializeAudio = async () => {
-    try {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      
-      // Create a simple pop sound using Web Audio API
-      const sampleRate = audioContextRef.current.sampleRate;
-      const duration = 0.2;
-      const buffer = audioContextRef.current.createBuffer(1, sampleRate * duration, sampleRate);
-      const data = buffer.getChannelData(0);
-      
-      for (let i = 0; i < buffer.length; i++) {
-        const t = i / sampleRate;
-        data[i] = Math.sin(2 * Math.PI * 800 * t) * Math.exp(-t * 10) * 0.3;
+    // Spawn bubbles every 0.75 seconds
+    const spawner = setInterval(() => {
+      if (gameActive) {
+        spawnBubble();
       }
-      
-      popSoundRef.current = buffer;
-    } catch (error) {
-      console.log('Audio initialization failed:', error);
-    }
-  };
+    }, 750);
 
-  const playPopSound = () => {
-    if (audioContextRef.current && popSoundRef.current) {
-      try {
-        const source = audioContextRef.current.createBufferSource();
-        source.buffer = popSoundRef.current;
-        source.connect(audioContextRef.current.destination);
-        source.start();
-      } catch (error) {
-        console.log('Sound play failed:', error);
-      }
-    }
-  };
-
-  const getRandomScreenEdge = () => {
-    const side = Math.floor(Math.random() * 4);
-    const gameArea = gameRef.current?.getBoundingClientRect();
-    if (!gameArea) return { x: 0, y: 0 };
-
-    switch (side) {
-      case 0: // Top
-        return { x: Math.random() * gameArea.width, y: -100 };
-      case 1: // Right
-        return { x: gameArea.width + 100, y: Math.random() * gameArea.height };
-      case 2: // Bottom
-        return { x: Math.random() * gameArea.width, y: gameArea.height + 100 };
-      case 3: // Left
-        return { x: -100, y: Math.random() * gameArea.height };
-      default:
-        return { x: 0, y: 0 };
-    }
-  };
-
-  const getRandomScreenOpposite = (startPos: { x: number; y: number }) => {
-    const gameArea = gameRef.current?.getBoundingClientRect();
-    if (!gameArea) return { x: 0, y: 0 };
-
-    // Move towards opposite side
-    if (startPos.x < 0) {
-      return { x: gameArea.width + 100, y: Math.random() * gameArea.height };
-    } else if (startPos.x > gameArea.width) {
-      return { x: -100, y: Math.random() * gameArea.height };
-    } else if (startPos.y < 0) {
-      return { x: Math.random() * gameArea.width, y: gameArea.height + 100 };
-    } else {
-      return { x: Math.random() * gameArea.width, y: -100 };
-    }
+    // Cleanup on game end
+    setTimeout(() => {
+      clearInterval(spawner);
+    }, 30000);
   };
 
   const spawnBubble = () => {
-    if (!gameActive) return;
+    if (!gameAreaRef.current) return;
 
-    const startPos = getRandomScreenEdge();
-    const endPos = getRandomScreenOpposite(startPos);
-    const duration = 4000 + Math.random() * 3000; // 4-7 seconds
+    const gameArea = gameAreaRef.current.getBoundingClientRect();
+    const size = 80 + Math.random() * 60; // 80-140px
     
     const newBubble: Bubble = {
       id: Date.now() + Math.random(),
-      x: startPos.x,
-      y: startPos.y,
-      targetX: endPos.x,
-      targetY: endPos.y,
-      size: 80 + Math.random() * 60, // 80-140px
+      x: Math.random() * (gameArea.width - size),
+      y: Math.random() * (gameArea.height - size),
+      size,
       color: ['#33FFCA', '#FF66B3', '#FFCA3A', '#A855F7', '#10B981'][Math.floor(Math.random() * 5)],
-      startTime: Date.now(),
-      duration,
-      popping: false,
-      popFrame: 0
+      popped: false
     };
 
     setBubbles(prev => [...prev, newBubble]);
+
+    // Remove bubble after 4-7 seconds if not popped
+    setTimeout(() => {
+      setBubbles(prev => prev.filter(b => b.id !== newBubble.id));
+    }, 4000 + Math.random() * 3000);
   };
 
   const popBubble = (bubbleId: number) => {
-    if (!gameActive) return;
-
-    playPopSound();
-    
     setBubbles(prev => prev.map(bubble => {
-      if (bubble.id === bubbleId && !bubble.popping) {
-        // Create particle burst
-        createParticleBurst(bubble.x, bubble.y);
-        
+      if (bubble.id === bubbleId && !bubble.popped) {
         setScore(s => s + 1);
-        
-        return { ...bubble, popping: true, popFrame: 0 };
+        return { ...bubble, popped: true };
       }
       return bubble;
     }));
-  };
 
-  const createParticleBurst = (x: number, y: number) => {
-    const newParticles: Particle[] = [];
-    
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2;
-      const speed = 2 + Math.random() * 3;
-      
-      newParticles.push({
-        id: Date.now() + i,
-        x,
-        y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: 0.6,
-        maxLife: 0.6
-      });
-    }
-    
-    setParticles(prev => [...prev, ...newParticles]);
-  };
-
-  const startAnimationLoop = () => {
-    const animate = () => {
-      if (!gameActive) return;
-
-      const now = Date.now();
-
-      // Update bubbles
-      setBubbles(prev => prev.map(bubble => {
-        if (bubble.popping) {
-          // Animate pop frames
-          const newFrame = bubble.popFrame + 0.5;
-          if (newFrame >= 6) {
-            return null; // Mark for removal
-          }
-          return { ...bubble, popFrame: newFrame };
-        } else {
-          // Animate movement
-          const elapsed = now - bubble.startTime;
-          const progress = Math.min(elapsed / bubble.duration, 1);
-          
-          // Smooth easing (InOutSine approximation)
-          const easeProgress = 0.5 - Math.cos(progress * Math.PI) / 2;
-          
-          const newX = bubble.x + (bubble.targetX - bubble.x) * easeProgress;
-          const newY = bubble.y + (bubble.targetY - bubble.y) * easeProgress;
-          
-          if (progress >= 1) {
-            return null; // Mark for removal
-          }
-          
-          return { ...bubble, x: newX, y: newY };
-        }
-      }).filter(Boolean) as Bubble[]);
-
-      // Update particles
-      setParticles(prev => prev.map(particle => {
-        const newLife = particle.life - 0.016; // ~60fps
-        if (newLife <= 0) return null;
-        
-        return {
-          ...particle,
-          x: particle.x + particle.vx,
-          y: particle.y + particle.vy,
-          vy: particle.vy + 0.1, // Gravity
-          life: newLife
-        };
-      }).filter(Boolean) as Particle[]);
-
-      animationFrameRef.current = requestAnimationFrame(animate);
-    };
-
-    animate();
+    // Remove popped bubble after animation
+    setTimeout(() => {
+      setBubbles(prev => prev.filter(b => b.id !== bubbleId));
+    }, 300);
   };
 
   const endGame = () => {
     setGameActive(false);
-    
-    // Clear all bubbles and particles
+    setGameOver(true);
     setBubbles([]);
-    setParticles([]);
-    
-    if (bubbleSpawnerRef.current) {
-      clearInterval(bubbleSpawnerRef.current);
-    }
-    
+
     // Award currency
     const state = usePearl.getState();
     usePearl.setState({ currency: state.currency + score });
-    
-    // Show results modal
+
+    // Show results after a moment
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('showModal', {
         detail: {
@@ -296,19 +118,13 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
         }
       }));
       onClose();
-    }, 1000);
+    }, 2000);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div 
-      ref={gameRef}
-      className="fixed inset-0 z-50"
-      style={{
-        background: 'linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 50%, #312e81 100%)'
-      }}
-    >
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
       {/* Game UI */}
       <div className="absolute top-8 left-0 right-0 flex justify-between items-center px-8 z-10">
         {/* Score */}
@@ -326,71 +142,59 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
         </div>
       </div>
 
-      {/* Bubbles */}
-      {bubbles.map(bubble => (
-        <div
-          key={bubble.id}
-          className="absolute cursor-pointer select-none"
-          style={{
-            left: `${bubble.x - bubble.size/2}px`,
-            top: `${bubble.y - bubble.size/2}px`,
-            width: `${bubble.size}px`,
-            height: `${bubble.size}px`,
-            opacity: bubble.popping ? Math.max(0, 1 - bubble.popFrame / 6) : 1,
-            transform: bubble.popping ? `scale(${1 + bubble.popFrame * 0.2})` : 'scale(1)',
-            transition: bubble.popping ? 'none' : 'transform 0.1s ease-out'
-          }}
-          onClick={() => popBubble(bubble.id)}
-        >
-          {/* Bubble Base */}
+      {/* Game Area */}
+      <div ref={gameAreaRef} className="absolute inset-0 pt-24 pb-8">
+        {/* Bubbles */}
+        {bubbles.map(bubble => (
           <div
-            className="w-full h-full rounded-full relative overflow-hidden"
+            key={bubble.id}
+            className={`absolute cursor-pointer select-none transition-all duration-300 ${
+              bubble.popped ? 'scale-150 opacity-0' : 'scale-100 opacity-100'
+            }`}
             style={{
-              background: `radial-gradient(circle at 30% 30%, ${bubble.color}40, ${bubble.color}80)`,
-              border: `2px solid ${bubble.color}`,
-              boxShadow: `0 0 20px ${bubble.color}50, inset 0 0 20px ${bubble.color}30`
+              left: `${bubble.x}px`,
+              top: `${bubble.y}px`,
+              width: `${bubble.size}px`,
+              height: `${bubble.size}px`,
             }}
+            onClick={() => !bubble.popped && popBubble(bubble.id)}
           >
-            {/* Highlight */}
-            <div 
-              className="absolute top-2 left-2 w-4 h-4 bg-white/60 rounded-full blur-sm"
-              style={{ width: `${bubble.size * 0.15}px`, height: `${bubble.size * 0.15}px` }}
-            />
-            
-            {/* Pop Animation */}
-            {bubble.popping && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div 
-                  className="text-white font-bold"
-                  style={{ 
-                    fontSize: `${bubble.size * 0.3}px`,
-                    textShadow: '0 0 10px rgba(255,255,255,0.8)'
-                  }}
-                >
-                  POP!
+            {/* Bubble */}
+            <div
+              className="w-full h-full rounded-full relative"
+              style={{
+                background: `radial-gradient(circle at 30% 30%, ${bubble.color}40, ${bubble.color}80)`,
+                border: `3px solid ${bubble.color}`,
+                boxShadow: `0 0 20px ${bubble.color}50`
+              }}
+            >
+              {/* Highlight */}
+              <div 
+                className="absolute top-2 left-2 bg-white/60 rounded-full"
+                style={{ 
+                  width: `${bubble.size * 0.15}px`, 
+                  height: `${bubble.size * 0.15}px` 
+                }}
+              />
+              
+              {/* Pop text */}
+              {bubble.popped && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div 
+                    className="text-white font-bold"
+                    style={{ fontSize: `${bubble.size * 0.3}px` }}
+                  >
+                    POP!
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
-      {/* Particles */}
-      {particles.map(particle => (
-        <div
-          key={particle.id}
-          className="absolute w-2 h-2 bg-yellow-300 rounded-full"
-          style={{
-            left: `${particle.x}px`,
-            top: `${particle.y}px`,
-            opacity: particle.life / particle.maxLife,
-            boxShadow: '0 0 6px rgba(255, 255, 0, 0.8)'
-          }}
-        />
-      ))}
-
-      {/* Game Over Overlay */}
-      {timeLeft === 0 && (
+      {/* Game Over Screen */}
+      {gameOver && (
         <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
           <div className="bg-gradient-to-br from-[#1A1A28] to-[#101018] rounded-3xl p-8 text-center border-2 border-[#33FFCA]/30 max-w-md">
             <h2 className="text-4xl font-bold text-white mb-4">Time's Up!</h2>
