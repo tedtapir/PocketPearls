@@ -63,7 +63,8 @@ export const ActivityModal: React.FC<ActivityModalProps> = ({ activity, onClose,
       case 'talk':
         return (
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold gradient-text">What would you like to talk about?</h3>
+            <h3 className="text-xl font-semibold gradient-text">Quick Chat Options</h3>
+            <p className="text-gray-300 text-sm">For deeper conversations, use the Chat feature!</p>
             <div className="space-y-2">
               {[
                 { id: 'light', label: 'Light Chat', desc: 'Casual conversation' },
