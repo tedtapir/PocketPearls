@@ -435,7 +435,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She enjoyed the meal!",
-      clipPath: '/videos/eat_accept_1.mp4.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'feed', outcome: 'success' }),
       statChanges: { hunger: hungerGain, affection: affectionGain }
     };
   },
@@ -536,7 +536,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She had fun playing!",
-      clipPath: '/videos/play_start_1.mp4.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'play', outcome: 'success' }),
       statChanges: { energy: -energyCost, affection: affectionGain }
     };
   },
@@ -578,7 +578,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She feels much cleaner now!",
-      clipPath: '/videos/wash_start_1.mp4.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'wash', outcome: 'success' }),
       statChanges: { hygiene: 100 - state.hygiene, affection: affectionGain }
     };
   },
@@ -630,7 +630,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She's settling in for a good rest.",
-      clipPath: '/videos/sleep_settling_1.mp4.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'sleep', outcome: 'success' }),
       statChanges: { energy: 40, trust: 3, hunger: -10 }
     };
   },
@@ -672,7 +672,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She feels better with a tidy space!",
-      clipPath: '/videos/tidy_before_1.mp4',
+      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'tidy', outcome: 'success' }),
       statChanges: { trust: 2, affection: 6, energy: -8 }
     };
   },
