@@ -590,7 +590,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
     return {
       success: true,
       message: "She feels much cleaner now!",
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'wash', outcome: 'success' }),
+      clipPath: '/videos/wash_start_1.mp4',
       statChanges: { hygiene: 100 - state.hygiene, affection: affectionGain }
     };
   },
