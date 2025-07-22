@@ -384,7 +384,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
       return {
         success: false,
         message: "She's not hungry right now.",
-        clipPath: resolveClip({ mood: state.mood, statusFlags: state.statusFlags, activity: 'feed', outcome: 'failure' }),
+        clipPath: '/videos/pearl_sad_1.mp4',
         statChanges: {}
       };
     }
@@ -432,10 +432,20 @@ export const usePearl = create<PearlStore>((set, get) => ({
       detail: { statChanges: { hunger: hungerGain, affection: affectionGain }, message: "She enjoyed the meal!" }
     }));
     
+    // Get the correct video based on food type
+    let clipPath = '/videos/eat_accept_1.mp4.mp4'; // default
+    if (foodType === 'healthy') {
+      clipPath = '/videos/healthy_meal_1.mp4';
+    } else if (foodType === 'quick') {
+      clipPath = '/videos/quick_snack_1.mp4';
+    } else if (foodType === 'junk') {
+      clipPath = '/videos/comfort_food_1.mp4';
+    }
+    
     return {
       success: true,
       message: "She enjoyed the meal!",
-      clipPath: resolveClip({ mood: get().mood, statusFlags: get().statusFlags, activity: 'feed', outcome: 'success' }),
+      clipPath: clipPath,
       statChanges: { hunger: hungerGain, affection: affectionGain }
     };
   },
