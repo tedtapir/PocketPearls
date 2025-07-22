@@ -433,13 +433,15 @@ export const usePearl = create<PearlStore>((set, get) => ({
     }));
     
     // Get the correct video based on food type
-    let clipPath = '/videos/eat_accept_1.mp4.mp4'; // default
+    let clipPath = '';
     if (foodType === 'healthy') {
       clipPath = '/videos/healthy_meal_1.mp4';
     } else if (foodType === 'quick') {
       clipPath = '/videos/quick_snack_1.mp4';
     } else if (foodType === 'junk') {
       clipPath = '/videos/comfort_food_1.mp4';
+    } else {
+      clipPath = '/videos/eat_accept_1.mp4.mp4'; // default fallback
     }
     
     return {

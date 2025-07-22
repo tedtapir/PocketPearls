@@ -64,7 +64,13 @@ export const ActionBar: React.FC = () => {
 
   const handleActivityClipEnd = () => {
     setActivityClip(null);
-    setShowAppreciation(true);
+    // Don't show appreciation for feed activity, just return to normal idle
+    if (lastResult?.success) {
+      // Brief pause before returning to normal idle state
+      setTimeout(() => {
+        // This will trigger the PearlAvatar to show the updated mood
+      }, 500);
+    }
   };
 
   const handleAppreciationEnd = () => {
