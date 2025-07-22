@@ -153,8 +153,8 @@ export const usePearl = create<PearlStore>((set, get) => ({
     // Priority order from blueprint
     if (state.statusFlags.includes('leavingWarning')) return 'distressed';
     if (state.statusFlags.includes('sick')) return 'low';
-    if (happiness < 30) return 'distressed';
-    if (happiness < 50) return 'low';
+    if (happiness < 25) return 'distressed';
+    if (happiness < 45) return 'low';
     if (happiness < 75) return 'neutral';
     if (state.statusFlags.includes('playful')) return 'playful';
     return 'happy';

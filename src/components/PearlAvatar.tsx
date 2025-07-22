@@ -4,33 +4,42 @@ import { VideoPlayer } from './VideoPlayer';
 import { resolveClipSequence, getMoodEmoji } from '../utils/clipResolver';
 
 export const PearlAvatar: React.FC = () => {
-  const { mood, statusFlags, bondLevel } = usePearl();
+  const { mood, statusFlags, bondLevel, hunger, energy, hygiene } = usePearl();
   
   const { clipPaths, fallbackEmoji, pearlColor } = useMemo(() => {
     console.log('Current mood:', mood, 'Status flags:', statusFlags);
     
+    // Don't show sad videos if Pearl just got fed and has good hunger
+    let effectiveMood = mood;
+    if (mood === 'low' && hunger > 60) {
+      effectiveMood = 'neutral';
+    }
+    if (mood === 'distressed' && hunger > 60 && energy > 40) {
+      effectiveMood = 'neutral';
+    }
+    
     // Status flags override mood
     if (statusFlags.includes('sick')) {
       return { 
-        clipPaths: resolveClipSequence({ mood, statusFlags }), 
+        clipPaths: resolveClipSequence({ mood: effectiveMood, statusFlags }), 
         fallbackEmoji: '😔', 
         pearlColor: '#8B5A5A' 
       };
     }
     if (statusFlags.includes('leavingWarning')) {
       return { 
-        clipPaths: resolveClipSequence({ mood, statusFlags }), 
+        clipPaths: resolveClipSequence({ mood: effectiveMood, statusFlags }), 
         fallbackEmoji: '😔', 
         pearlColor: '#5A5A8B' 
       };
     }
     
     // Mood-based selection
-    const clipPaths = resolveClipSequence({ mood, statusFlags, bondLevel });
+    const clipPaths = resolveClipSequence({ mood: effectiveMood, statusFlags, bondLevel });
     console.log('Selected clip paths:', clipPaths);
     let pearlColor = '#8FD8FF';
     
-    switch (mood) {
+    switch (effectiveMood) {
       case 'happy':
         pearlColor = '#B89CFF';
         break;
@@ -53,7 +62,7 @@ export const PearlAvatar: React.FC = () => {
       fallbackEmoji: '😊', 
       pearlColor 
     };
-  }, [mood, statusFlags, bondLevel]);
+  }, [mood, statusFlags, bondLevel, hunger, energy, hygiene]);
 
   return (
     <div className="w-full h-full relative overflow-hidden">
