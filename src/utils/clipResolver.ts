@@ -36,23 +36,19 @@ const CLIP_PATHS = {
   activities: {
     feed: {
       success: [
-        '/videos/eat_accept_1.mp4.mp4',
-        '/videos/alexa_neutral_1.mp4'
-      ],
-      failure: [
-        '/videos/alexa_neutral_2.mp4'
-      ],
-      healthy: [
-        '/videos/healthy_meal_1.mp4',
         '/videos/eat_accept_1.mp4.mp4'
       ],
+      failure: [
+        '/videos/pearl_sad_1.mp4'
+      ],
+      healthy: [
+        '/videos/healthy_meal_1.mp4'
+      ],
       quick: [
-        '/videos/quick_snack_1.mp4',
-        '/videos/alexa_neutral_3.mp4'
+        '/videos/quick_snack_1.mp4'
       ],
       junk: [
-        '/videos/comfort_food_1.mp4',
-        '/videos/alexa_neutral_4.mp4'
+        '/videos/comfort_food_1.mp4'
       ]
     },
     talk: {
