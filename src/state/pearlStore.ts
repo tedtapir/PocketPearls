@@ -131,7 +131,7 @@ export const usePearl = create<PearlStore>((set, get) => ({
   activityCounts: {},
   
   // New system initial state
-  currency: 0,
+  currency: 300,
   lastLogin: Date.now(),
   achievements: [],
 
