@@ -130,9 +130,11 @@ export const BubblePopGame: React.FC<BubblePopGameProps> = ({ isOpen, onClose })
     setGameActive(false);
     setGameOver(true);
 
-    // Award currency
-    const state = usePearl.getState();
-    usePearl.setState({ currency: state.currency + score });
+    // Award currency - use the store's currency state
+    const { currency } = usePearl.getState();
+    usePearl.setState({ currency: currency + score });
+    
+    console.log('Awarded currency:', score, 'New total:', currency + score);
 
     // Show results after a moment
     setTimeout(() => {
